@@ -1,0 +1,17 @@
+.deps/
+.libs/
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config.h
+config.h.in
+config.h.in~
+config.log
+config.status
+configure
+libtool
+mod_browserid-*.tar.gz
+mod_auth_browserid.la
+mod_auth_browserid.lo
+mod_auth_browserid.slo
+stamp-h1

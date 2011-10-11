@@ -1,0 +1,1 @@
+LoadModule mod_auth_browserid_module @ServerRoot@/../.libs/mod_auth_browserid.so
