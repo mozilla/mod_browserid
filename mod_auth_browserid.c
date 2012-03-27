@@ -247,6 +247,8 @@ unsigned char c;
 #define VERSION "1.0.0"
 #define unless(c) if(!(c))
 
+#define CURL_WRITE_BUF 256
+
 /* apache module name */
 module AP_MODULE_DECLARE_DATA mod_auth_browserid_module;
 
@@ -568,10 +570,11 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
   struct MemoryStruct *mem = (struct MemoryStruct *)userp;
 
   if (mem->size + realsize >= mem->realsize) {
-    mem->realsize = mem->size + realsize + 256;
-    void *tmp = apr_palloc(mem->r->pool, mem->size + realsize + 256);
+    mem->realsize = mem->size + realsize + CURL_WRITE_BUF;
+    void *tmp = apr_palloc(mem->r->pool, mem->size + realsize + CURL_WRITE_BUF);
     memcpy(tmp, mem->memory, mem->size);
-    mem->memory = tmp;
+    mem->memory = apr_palloc(mem->r->pool, mem->size + realsize + CURL_WRITE_BUF);
+    memcpy(mem->memory, tmp, mem->size);
   }
 
   memcpy(&(mem->memory[mem->size]), contents, realsize);
