@@ -1,0 +1,77 @@
+E-mail to dev-identity list on 28 Mar 
+(https://groups.google.com/forum/?fromgroups#!topic/mozilla.dev.identity/g9yCsiIV_Hs)
+=====================================================================================
+
+This morning I took a closer look at my running server using
+mod_browserid, the configuration, and the module source code.
+Following are some observations:
+
+Log errors:
+=======
+
+[Wed Mar 28 01:04:56 2012] [error] [client 92.194.45.48]
+Auth_browserID: ap_hook_check_user_id in - Auth_browserid_check_cookie
+[Wed Mar 28 01:04:56 2012] [error] [client 92.194.45.48] PHP Notice:
+Use of undefined constant php - assumed 'php' in
+/home/tbrowde/public_html/mygnus.com/public/id_login/browserid_login.php
+on line 1
+[Wed Mar 28 01:05:24 2012] [error] [client 92.194.45.48]
+Auth_browserID: ap_hook_check_user_id in -
+Auth_browserid_check_cookie, referer: https://mygnus.com/
+
+Possible problems with my test setup:
+===========================
+
++ directive  "AuthBrowserIDAuthoritative" shows "on" in example, but
+code says set "yes" or "no" (default)
+
++ function "create_browserid_config" doesn't explicitly set all
+variables to default values
+
+Some suggestions:
+=============
+
+2. allow user to establish default max credential life for each sign in
+
+3. allow mod_browserid an option (directive) to adjust max credential
+life for a sign in
+
+4. explain all directives in README (particularly "authBasicFix"); how
+do they affect the example setup (two directories used two different
+ways)?
+
+E-mail to dev-identity list of 29 Mar:
+=====================================
+
++ fix or document reasons for observed Apache log errors
+
++ incorporate other observations in previous e-mail to dev-identity
+list on 28 Mar [see above]
+
++ code cleanup
+  - minor typos
+  - rearrange some functions for easier maintenance (e.g., keep those
+    modifying struct BrowserIDConfigRec closer to it)
+
++ add capability to use a dbm for authorized user e-mail addresses
+
++ more examples
+
++ add bits to docs (e.g., ensure all user options and inputs are documented)
+
+#========= COMPLETED =====================
+
+1. module name for Apache2: [DONE]
+
+current:
+
+/* apache module name */
+module AP_MODULE_DECLARE_DATA mod_auth_browserid_module;
+
+suggested:
+auth_browserid_module;
+
+Rationale:  More like other module names in existing set shipping with Apache2.
+
+Example of a current one:
+LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
