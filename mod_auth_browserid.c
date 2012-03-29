@@ -248,7 +248,7 @@ unsigned char c;
 #define unless(c) if(!(c))
 
 /* apache module name */
-module AP_MODULE_DECLARE_DATA mod_auth_browserid_module;
+module AP_MODULE_DECLARE_DATA auth_browserid_module;
 
 /* config structure */
 typedef struct {
