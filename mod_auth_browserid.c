@@ -267,7 +267,7 @@ typedef struct {
   char *cookieName;
   int 	authoritative;
   int 	authBasicFix;
-  char  *forwardedRequestHeader;
+  char *forwardedRequestHeader;
   char *submitPath;
   char *logoutPath;
   char *verificationServerURL;
