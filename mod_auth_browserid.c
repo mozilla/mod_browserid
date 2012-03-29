@@ -838,7 +838,7 @@ static void *create_browserid_config(apr_pool_t *p, char *d)
     return conf;
 }
 
-/* apache config fonction of the module */
+/* apache config function of the module */
 static const command_rec Auth_browserid_cmds[] =
 {
     AP_INIT_TAKE1 ("AuthBrowserIDSetHTTPHeader", ap_set_string_slot,
