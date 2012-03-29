@@ -282,13 +282,13 @@ static void *create_browserid_config(apr_pool_t *p, char *d)
 {
     BrowserIDConfigRec *conf = apr_palloc(p, sizeof(*conf));
 
-    conf->cookieName = apr_pstrdup(p,"BrowserID");
-    conf->submitPath = "/mod_browserid_submit";
-    conf->serverSecret = "BrowserIDSecret";
-    conf->logoutPath = NULL;
-    conf->authoritative = 0;  /* not by default */
     conf->authBasicFix = 0;  /* do not fix header for php auth by default */
+    conf->authoritative = 0;  /* not by default */
+    conf->cookieName = apr_pstrdup(p,"BrowserID");
     conf->forwardedRequestHeader = NULL; /* pass the authenticated user, signed, as an HTTP header */
+    conf->logoutPath = NULL;
+    conf->serverSecret = "BrowserIDSecret";
+    conf->submitPath = "/mod_browserid_submit";
     return conf;
 }
 
