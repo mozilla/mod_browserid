@@ -289,6 +289,8 @@ static void *create_browserid_config(apr_pool_t *p, char *d)
     conf->logoutPath = NULL;
     conf->serverSecret = "BrowserIDSecret";
     conf->submitPath = "/mod_browserid_submit";
+    conf->verificationServerURL = NULL;
+    conf->verifyLocally = 0;
     return conf;
 }
 
