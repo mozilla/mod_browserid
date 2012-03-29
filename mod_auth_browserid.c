@@ -564,14 +564,14 @@ static int Auth_browserid_check_cookie(request_rec *r)
  **************************************************/
 static int Auth_browserid_check_auth(request_rec *r)
 {
-  BrowserIDConfigRec *conf=NULL;
-  char *szUser = NULL;
-  const apr_array_header_t *reqs_arr=NULL;
-  require_line *reqs=NULL;
-  register int x = 0;
-  const char *szRequireLine = NULL;
-  char *szFileName = NULL;
-  char *szRequire_cmd = NULL;
+  BrowserIDConfigRec *conf           = NULL;
+  char *szUser                       = NULL;
+  const apr_array_header_t *reqs_arr = NULL;
+  require_line *reqs                 = NULL;
+  register int x                     = 0;
+  const char *szRequireLine          = NULL;
+  char *szFileName                   = NULL;
+  char *szRequire_cmd                = NULL;
   
   /* get apache config */
   conf = ap_get_module_config(r->per_dir_config, &mod_auth_browserid_module);
