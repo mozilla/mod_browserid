@@ -264,15 +264,15 @@ module AP_MODULE_DECLARE_DATA auth_browserid_module =
 
 /* config structure */
 typedef struct {
-  char *cookieName;
-  int 	authoritative;
   int 	authBasicFix;
+  int 	authoritative;
+  char *cookieName;
   char *forwardedRequestHeader;
-  char *submitPath;
   char *logoutPath;
+  char *serverSecret;
+  char *submitPath;
   char *verificationServerURL;
   int   verifyLocally;
-  char *serverSecret;
 } BrowserIDConfigRec;
 
 /************************************************************************************
