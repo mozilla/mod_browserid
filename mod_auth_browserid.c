@@ -881,7 +881,7 @@ static const command_rec Auth_browserid_cmds[] =
 };
 
 /* apache module structure */
-module AP_MODULE_DECLARE_DATA mod_auth_browserid_module =
+module AP_MODULE_DECLARE_DATA auth_browserid_module =
 {
     STANDARD20_MODULE_STUFF,
     create_browserid_config,    /* dir config creator */
