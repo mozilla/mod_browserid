@@ -496,51 +496,59 @@ static int validateCookie(request_rec *r, BrowserIDConfigRec *conf, char *szCook
  **************************************************/
 static int Auth_browserid_check_cookie(request_rec *r)
 {
-    BrowserIDConfigRec *conf=NULL;
-    char *szCookieValue=NULL;
-    char *szRemoteIP=NULL;
+    BrowserIDConfigRec *conf = NULL;
+    char *szCookieValue      = NULL;
+    char *szRemoteIP         = NULL;
 
-    ap_log_rerror(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, 0,r,ERRTAG  "ap_hook_check_user_id in - Auth_browserid_check_cookie");
+    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                  "ap_hook_check_user_id in - Auth_browserid_check_cookie");
 
     /* get apache config */
     conf = ap_get_module_config(r->per_dir_config, &mod_auth_browserid_module);
 
     unless(conf->authoritative)
-	   return DECLINED;
+        return DECLINED;
 
-    ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG  "AuthType are '%s'", ap_auth_type(r));
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,ERRTAG
+                  "AuthType are '%s'", ap_auth_type(r));
     unless(strncmp("BrowserID",ap_auth_type(r),9)==0) {
-	   ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG "Auth type must be 'BrowserID'");
-      return HTTP_UNAUTHORIZED;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
+                         "Auth type must be 'BrowserID'");
+        return HTTP_UNAUTHORIZED;
     }
 
     unless(conf->cookieName) {
-      ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG "No Auth_browserid_CookieName specified");
-      return HTTP_UNAUTHORIZED;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                      "No Auth_browserid_CookieName specified");
+        return HTTP_UNAUTHORIZED;
     }
 
     /* get cookie who are named cookieName */
-    unless(szCookieValue = extract_cookie(r, conf->cookieName))
-    {
-      ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r, ERRTAG "BrowserID cookie not found; not authorized! RemoteIP:%s",szRemoteIP);
-      return HTTP_UNAUTHORIZED;
+    unless(szCookieValue = extract_cookie(r, conf->cookieName)) {
+        ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
+                    "BrowserID cookie not found; not authorized! RemoteIP:%s",szRemoteIP);
+        return HTTP_UNAUTHORIZED;
     }
-    ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG  "got cookie; value is %s", szCookieValue);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                  "got cookie; value is %s", szCookieValue);
 
     /* Check cookie validity */
     if (validateCookie(r, conf, szCookieValue)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r, ERRTAG "Invalid BrowserID cookie: %s", szCookieValue);
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, r, ERRTAG
+                      "Invalid BrowserID cookie: %s", szCookieValue);
         return HTTP_UNAUTHORIZED;
     }
 
     /* set REMOTE_USER var for scripts language */
-    apr_table_setn(r->subprocess_env,"REMOTE_USER",r->user);
+    apr_table_setn(r->subprocess_env, "REMOTE_USER", r->user);
 
-    /* log authorisation ok */
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, ERRTAG "BrowserID authentication ok");
+    /* log authorization ok */
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                  "BrowserID authentication ok");
 
     /* fix http header for php */
-    if (conf->authBasicFix) fix_headers_in(r,"browserid");
+    if (conf->authBasicFix)
+        fix_headers_in(r, "browserid");
 
     /* if all is ok return auth ok */
     return OK;
