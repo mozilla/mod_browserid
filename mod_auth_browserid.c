@@ -250,6 +250,18 @@ unsigned char c;
 /* apache module name */
 module AP_MODULE_DECLARE_DATA auth_browserid_module;
 
+/* apache module structure */
+module AP_MODULE_DECLARE_DATA auth_browserid_module =
+{
+    STANDARD20_MODULE_STUFF,
+    create_browserid_config,    /* dir config creator */
+    NULL,                       /* dir merger --- default is to override */
+    NULL,                       /* server config */
+    NULL,                       /* merge server config */
+    Auth_browserid_cmds,        /* command apr_table_t */
+    register_hooks              /* register hooks */
+};
+
 /* config structure */
 typedef struct {
   char *cookieName;
@@ -878,16 +890,4 @@ static const command_rec Auth_browserid_cmds[] =
      OR_AUTHCFG, "Server secret for authentication cookie."),
 
     {NULL}
-};
-
-/* apache module structure */
-module AP_MODULE_DECLARE_DATA auth_browserid_module =
-{
-    STANDARD20_MODULE_STUFF,
-    create_browserid_config,    /* dir config creator */
-    NULL,                       /* dir merger --- default is to override */
-    NULL,                       /* server config */
-    NULL,                       /* merge server config */
-    Auth_browserid_cmds,        /* command apr_table_t */
-    register_hooks              /* register hooks */
 };
