@@ -263,43 +263,44 @@ typedef struct {
 /* apache config function of the module */
 static const command_rec Auth_browserid_cmds[] =
 {
-    AP_INIT_FLAG ("AuthBrowserIDSimulateAuthBasic", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(BrowserIDConfigRec, authBasicFix),
-     OR_AUTHCFG, "Set to 'yes' to enable creation of a synthetic Basic Authorization header containing the username."),
 
-    AP_INIT_FLAG ("AuthBrowserIDAuthoritative", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(BrowserIDConfigRec, authoritative),
-     OR_AUTHCFG, "Set to 'yes' to allow access control to be passed along to lower modules; set to 'no' by default."),
+  AP_INIT_FLAG("AuthBrowserIDSimulateAuthBasic", ap_set_flag_slot,
+               (void *)APR_OFFSETOF(BrowserIDConfigRec, authBasicFix),
+               OR_AUTHCFG, "Set to 'yes' to enable creation of a synthetic Basic Authorization header containing the username."),
 
-    AP_INIT_TAKE1("AuthBrowserIDCookieName", ap_set_string_slot,
-     (void *)APR_OFFSETOF(BrowserIDConfigRec, cookieName),
-     OR_AUTHCFG, "Name of cookie to set."),
+  AP_INIT_FLAG("AuthBrowserIDAuthoritative", ap_set_flag_slot,
+               (void *)APR_OFFSETOF(BrowserIDConfigRec, authoritative),
+               OR_AUTHCFG, "Set to 'yes' to allow access control to be passed along to lower modules; set to 'no' by default."),
 
-    AP_INIT_TAKE1 ("AuthBrowserIDSetHTTPHeader", ap_set_string_slot,
-     (void *)APR_OFFSETOF(BrowserIDConfigRec, forwardedRequestHeader),
-     OR_AUTHCFG, "Set to 'yes' to forward a signed HTTP header containing the verified identity; set to 'no' by default."),
+  AP_INIT_TAKE1("AuthBrowserIDCookieName", ap_set_string_slot,
+                (void *)APR_OFFSETOF(BrowserIDConfigRec, cookieName),
+                OR_AUTHCFG, "Name of cookie to set."),
 
-    AP_INIT_TAKE1 ("AuthBrowserIDLogoutPath", ap_set_string_slot,
-     (void *)APR_OFFSETOF(BrowserIDConfigRec, logoutPath),
-     OR_AUTHCFG, "Path to which logout requests will be submitted.  An optional 'returnto' parameter will be used for a redirection, if provided."),
+  AP_INIT_TAKE1("AuthBrowserIDSetHTTPHeader", ap_set_string_slot,
+                (void *)APR_OFFSETOF(BrowserIDConfigRec, forwardedRequestHeader),
+                OR_AUTHCFG, "Set to 'yes' to forward a signed HTTP header containing the verified identity; set to 'no' by default."),
 
-    AP_INIT_TAKE1 ("AuthBrowserIDSecret", ap_set_string_slot,
-     (void *)APR_OFFSETOF(BrowserIDConfigRec, serverSecret),
-     OR_AUTHCFG, "Server secret for authentication cookie."),
+  AP_INIT_TAKE1("AuthBrowserIDLogoutPath", ap_set_string_slot,
+                (void *)APR_OFFSETOF(BrowserIDConfigRec, logoutPath),
+                OR_AUTHCFG, "Path to which logout requests will be submitted.  An optional 'returnto' parameter will be used for a redirection, if provided."),
 
-    AP_INIT_TAKE1 ("AuthBrowserIDSubmitPath", ap_set_string_slot,
-     (void *)APR_OFFSETOF(BrowserIDConfigRec, submitPath),
-     OR_AUTHCFG, "Path to which login forms will be submitted.  Form must contain a field named 'assertion'."),
+  AP_INIT_TAKE1("AuthBrowserIDSecret", ap_set_string_slot,
+                (void *)APR_OFFSETOF(BrowserIDConfigRec, serverSecret),
+                OR_AUTHCFG, "Server secret for authentication cookie."),
 
-    AP_INIT_TAKE1 ("AuthBrowserIDVerificationServerURL", ap_set_string_slot,
-     (void *)APR_OFFSETOF(BrowserIDConfigRec, verificationServerURL),
-     OR_AUTHCFG, "URL of the BrowserID verification server."),
+  AP_INIT_TAKE1("AuthBrowserIDSubmitPath", ap_set_string_slot,
+                (void *)APR_OFFSETOF(BrowserIDConfigRec, submitPath),
+                OR_AUTHCFG, "Path to which login forms will be submitted.  Form must contain a field named 'assertion'."),
 
-    AP_INIT_FLAG ("AuthBrowserIDVerifyLocally", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(BrowserIDConfigRec, verifyLocally),
-     OR_AUTHCFG, "Set to 'yes' to verify assertions locally; ignored if VerificationServerURL is set."),
+  AP_INIT_TAKE1("AuthBrowserIDVerificationServerURL", ap_set_string_slot,
+                (void *)APR_OFFSETOF(BrowserIDConfigRec, verificationServerURL),
+                OR_AUTHCFG, "URL of the BrowserID verification server."),
 
-    {NULL}
+  AP_INIT_FLAG("AuthBrowserIDVerifyLocally", ap_set_flag_slot,
+               (void *)APR_OFFSETOF(BrowserIDConfigRec, verifyLocally),
+               OR_AUTHCFG, "Set to 'yes' to verify assertions locally; ignored if VerificationServerURL is set."),
+
+  {NULL}
 };
 
 /* function declarations */
