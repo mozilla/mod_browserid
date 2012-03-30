@@ -311,7 +311,7 @@ static void createSessionCookie(request_rec *r, BrowserIDConfigRec *conf, char *
 static char * extract_cookie(request_rec *r, const char *szCookie_name);
 static void fix_headers_in(request_rec *r,char*szPassword);
 static char *generateSignature(request_rec *r, BrowserIDConfigRec *conf, char *userAddress);
-//apr_table_t *parseArgs(request_rec *r, char *argStr);
+apr_table_t *parseArgs(request_rec *r, char *argStr);
 static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf);
 static int processLogout(request_rec *r, BrowserIDConfigRec *conf);
 static void register_hooks(apr_pool_t *p);
@@ -366,7 +366,8 @@ static char * extract_cookie(request_rec *r, const char *szCookie_name)
 
   /* loop to search cookie name in cookie header */
   do {
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, ERRTAG "Checking cookie %s, looking for %s", szRaw_cookie, szCookie_name);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                  "Checking cookie %s, looking for %s", szRaw_cookie, szCookie_name);
 
     /* search cookie name in cookie string */
     unless (szRaw_cookie =strstr(szRaw_cookie, szCookie_name)) return 0;
@@ -386,7 +387,8 @@ static char * extract_cookie(request_rec *r, const char *szCookie_name)
   /* unescape the value string */ 
   unless (ap_unescape_url(szCookie) == 0) return 0;
 
-  ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, ERRTAG "finished cookie scan, returning %s", szCookie);
+  ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,
+                ERRTAG "finished cookie scan, returning %s", szCookie);
 
   return szCookie;
 }
@@ -428,7 +430,7 @@ static int user_in_file(request_rec *r, char *username, char *filename)
    application. e.g. php uses the Authorization header when logging the request
    in apache and not r->user (like it ought to). It is applied after the request
    has been authenticated. */
-static void fix_headers_in(request_rec *r,char*szPassword)
+static void fix_headers_in(request_rec *r, char*szPassword)
 {
   char *szUser=NULL;
  /* Set an Authorization header in the input request table for php and
@@ -436,18 +438,21 @@ static void fix_headers_in(request_rec *r,char*szPassword)
   apache logging of php scripts). We only set this if there is no header
   already present. */
 
- if (apr_table_get(r->headers_in,"Authorization")==NULL) 
- {
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, ERRTAG "fixing apache Authorization header for this request using user: %s",r->user);
+  if (apr_table_get(r->headers_in,"Authorization") == NULL) {
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                  "fixing apache Authorization header for this request using user: %s",r->user);
 
     /* concat username and ':' */
-    if (szPassword!=NULL) szUser=(char*)apr_pstrcat(r->pool,r->user,":",szPassword,NULL);
-    else szUser=(char*)apr_pstrcat(r->pool,r->user,":",NULL);
+    if (szPassword!=NULL)
+      szUser=(char*)apr_pstrcat(r->pool, r->user, ":", szPassword, NULL);
+    else
+      szUser=(char*)apr_pstrcat(r->pool, r->user, ":", NULL);
 
     /* alloc memory for the estimated encode size of the username */
     char *szB64_enc_user=(char*)apr_palloc(r->pool,apr_base64_encode_len(strlen(szUser))+1);
     unless (szB64_enc_user) {
-      ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG "memory alloc failed!");
+      ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                    "memory alloc failed!");
       return;
     }
 
@@ -461,7 +466,7 @@ static void fix_headers_in(request_rec *r,char*szPassword)
     r->ap_auth_type=apr_pstrdup(r->pool,"Basic");
   }
 
-  return;
+ return;
 }
 
 /** Generates a signature with the given inputs, returning a Base64-encoded
@@ -487,12 +492,14 @@ static int validateCookie(request_rec *r, BrowserIDConfigRec *conf, char *szCook
     char *sig = NULL;
     char *addr = apr_strtok(szCookieValue, "|", &sig);
     if (!addr) {
-      ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG "malformed BrowserID cookie");
+      ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
+                    "malformed BrowserID cookie");
       return 1;
     }
 
     char *digest64 = generateSignature(r, conf, addr);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, ERRTAG "Got cookie: email is %s; expected digest is %s; got digest %s",
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, ERRTAG
+                  "Got cookie: email is %s; expected digest is %s; got digest %s",
 		  addr, digest64, sig);
 
     /* paranoia indicates that we should use a time-invariant compare here */
@@ -525,36 +532,37 @@ static int Auth_browserid_check_cookie(request_rec *r)
     conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
     unless(conf->authoritative)
-        return DECLINED;
+      return DECLINED;
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,ERRTAG
                   "AuthType are '%s'", ap_auth_type(r));
+
     unless(strncmp("BrowserID",ap_auth_type(r),9)==0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
-                         "Auth type must be 'BrowserID'");
-        return HTTP_UNAUTHORIZED;
+      ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
+                    "Auth type must be 'BrowserID'");
+      return HTTP_UNAUTHORIZED;
     }
 
     unless(conf->cookieName) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
-                      "No Auth_browserid_CookieName specified");
-        return HTTP_UNAUTHORIZED;
+      ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                    "No Auth_browserid_CookieName specified");
+      return HTTP_UNAUTHORIZED;
     }
 
     /* get cookie who are named cookieName */
     unless(szCookieValue = extract_cookie(r, conf->cookieName)) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
+      ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
                     "BrowserID cookie not found; not authorized! RemoteIP:%s",szRemoteIP);
-        return HTTP_UNAUTHORIZED;
+      return HTTP_UNAUTHORIZED;
     }
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
                   "got cookie; value is %s", szCookieValue);
 
     /* Check cookie validity */
     if (validateCookie(r, conf, szCookieValue)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, r, ERRTAG
-                      "Invalid BrowserID cookie: %s", szCookieValue);
-        return HTTP_UNAUTHORIZED;
+      ap_log_rerror(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, r, ERRTAG
+                    "Invalid BrowserID cookie: %s", szCookieValue);
+      return HTTP_UNAUTHORIZED;
     }
 
     /* set REMOTE_USER var for scripts language */
@@ -566,7 +574,7 @@ static int Auth_browserid_check_cookie(request_rec *r)
 
     /* fix http header for php */
     if (conf->authBasicFix)
-        fix_headers_in(r, "browserid");
+      fix_headers_in(r, "browserid");
 
     /* if all is ok return auth ok */
     return OK;
@@ -614,32 +622,38 @@ static int Auth_browserid_check_auth(request_rec *r)
 
     /* get require line */
     szRequireLine = reqs[x].requirement;
-    ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG  "Require Line is '%s'", szRequireLine);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                  "Require Line is '%s'", szRequireLine);
 
     /* get the first word in require line */
     szRequire_cmd = ap_getword_white(r->pool, &szRequireLine);
-    ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG "Require Cmd is '%s'", szRequire_cmd);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                  "Require Cmd is '%s'", szRequire_cmd);
 
     /* if require cmd are valid-user, they are already authenticated than allow and return OK */
     if (!strcmp("valid-user",szRequire_cmd)) {
-      ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG "Require Cmd valid-user");
+      ap_log_rerror(APLOG_MARK,APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                    "Require Cmd valid-user");
       return OK;
     } 
     /* check the required user */ 
     else if (!strcmp("user",szRequire_cmd)) {
       szUser = ap_getword_conf(r->pool, &szRequireLine);
       if (strcmp(r->user, szUser)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r ,ERRTAG  "user '%s' is not the required user '%s'",r->user, szUser);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, ERRTAG
+                      "user '%s' is not the required user '%s'",r->user, szUser);
         return HTTP_FORBIDDEN;
       }
-      ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r ,ERRTAG  "user '%s' is authorized",r->user);
+      ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
+                    "user '%s' is authorized",r->user);
       return OK;
     }
     /* check for users in a file */
     else if (!strcmp("userfile",szRequire_cmd)) {
       szFileName = ap_getword_conf(r->pool, &szRequireLine);
       if (!user_in_file(r, r->user, szFileName)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r ,ERRTAG  "user '%s' is not in username list at '%s'",r->user,szFileName);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, ERRTAG
+                      "user '%s' is not in username list at '%s'", r->user,szFileName);
         return HTTP_FORBIDDEN;
       }
       else {
@@ -647,13 +661,12 @@ static int Auth_browserid_check_auth(request_rec *r)
       }
     }
   }
-  ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r ,ERRTAG  "user '%s' is not authorized",r->user);
+  ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                "user '%s' is not authorized", r->user);
 
   /* forbid by default */
   return HTTP_FORBIDDEN;
 }
-
-
 
 /* Helper struct for CURL response */
 struct MemoryStruct {
@@ -690,8 +703,8 @@ static char *verifyAssertionRemote(request_rec *r, BrowserIDConfigRec *conf, cha
   curl_easy_setopt(curl, CURLOPT_URL, conf->verificationServerURL);
   curl_easy_setopt(curl, CURLOPT_POST, 1);
 
-  ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r ,
-		ERRTAG  "Requeting verification with audience %s", r->server->server_hostname);
+  ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                "Requeting verification with audience %s", r->server->server_hostname);
 
   char *body = apr_psprintf(r->pool, "assertion=%s&audience=%s", 
 			    assertionText, r->server->server_hostname);
@@ -709,8 +722,8 @@ static char *verifyAssertionRemote(request_rec *r, BrowserIDConfigRec *conf, cha
  
   CURLcode result = curl_easy_perform(curl);
   if (result != 0) {
-    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r ,
-		  ERRTAG  "Error while communicating with BrowserID verification server: %s",
+    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                  "Error while communicating with BrowserID verification server: %s",
 		  curl_easy_strerror(result));
     curl_easy_cleanup(curl);
     return NULL;
@@ -718,8 +731,8 @@ static char *verifyAssertionRemote(request_rec *r, BrowserIDConfigRec *conf, cha
   long responseCode;
   curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &responseCode);
   if (responseCode != 200) {
-    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r ,
-		  ERRTAG  "Error while communicating with BrowserID verification server: result code %ld", responseCode);
+    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                  "Error while communicating with BrowserID verification server: result code %ld", responseCode);
     curl_easy_cleanup(curl);
     return NULL;
   }
@@ -737,9 +750,9 @@ apr_table_t *parseArgs(request_rec *r, char *argStr)
   apr_table_t *vars = apr_table_make(r->pool, 10) ;
   char *delim = "&";
 
-  for ( pair = apr_strtok(r->args, delim, &last) ; 
-        pair ;
-        pair = apr_strtok(NULL, delim, &last) ) 
+  for (pair = apr_strtok(r->args, delim, &last) ;
+       pair ;
+       pair = apr_strtok(NULL, delim, &last))
   {
     for (eq = pair ; *eq ; ++eq)
       if ( *eq == '+' )
@@ -748,10 +761,11 @@ apr_table_t *parseArgs(request_rec *r, char *argStr)
     ap_unescape_url(pair) ;
     eq = strchr(pair, '=') ;
     
-    if ( eq ) {
+    if (eq) {
       *eq++ = 0 ;
       apr_table_merge(vars, pair, eq) ;
-    } else {
+    }
+    else {
       apr_table_merge(vars, pair, "") ;
     }
   }
@@ -776,7 +790,8 @@ static void createSessionCookie(request_rec *r, BrowserIDConfigRec *conf, char *
  */
 static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
 {
-  ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG "Submission to BrowserID form handler");
+  ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                "Submission to BrowserID form handler");
 
   /* parse the form and extract the assertion */
   if (r->method_number == M_GET) {
@@ -788,9 +803,9 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
       apr_table_t *vars = parseArgs(r, r->args);
       const char *assertionParsed = apr_table_get(vars, "assertion") ;
       const char *returnto = apr_table_get(vars, "returnto") ;
-      ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG 
+      ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
         "In post_read_request; parsed assertion as %s", assertionParsed);
-      ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG 
+      ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
         "In post_read_request; parsed returnto as %s", returnto);
 
       /* verify the assertion... */
@@ -801,17 +816,20 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
           char errorBuffer[256];
           parsed_result = yajl_tree_parse(assertionResult, errorBuffer, 255);
           if (!parsed_result) {
-            ap_log_rerror(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, 0,r,ERRTAG "Error parsing BrowserID verification response: malformed payload: %s", errorBuffer);
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                          "Error parsing BrowserID verification response: malformed payload: %s", errorBuffer);
             return DECLINED;
           }
-          ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG 
-            "In post_read_request; parsed JSON from verification server: %s", assertionResult);
-        } else {
-          ap_log_rerror(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, 0,r,ERRTAG
-            "Unable to verify assertion; communication error with verification server");
+          ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                        "In post_read_request; parsed JSON from verification server: %s", assertionResult);
+        }
+        else {
+          ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                        "Unable to verify assertion; communication error with verification server");
           return DECLINED;
         }
-      } else {
+      }
+      else {
         if (conf->verifyLocally) {
           char *hdr=NULL, *payload=NULL, *sig=NULL;
           char *assertion = apr_pstrdup(r->pool, assertionParsed);
@@ -826,14 +844,17 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
               char errorBuffer[256];
               parsed_result = yajl_tree_parse(payloadDecode, errorBuffer, 255);
               if (!parsed_result) {
-                ap_log_rerror(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, 0,r,ERRTAG "Error parsing BrowserID login: malformed payload: %s", errorBuffer);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                              "Error parsing BrowserID login: malformed payload: %s", errorBuffer);
                 return DECLINED;
               }
               /** XXX more local validation required!!! Check timestamp, audience **/
             }
           }
-        } else {
-          ap_log_rerror(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, 0,r,ERRTAG "Cannot verify BrowserID login: no verification server configured!");
+        }
+        else {
+          ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                        "Cannot verify BrowserID login: no verification server configured!");
           return DECLINED;
         }
       }
@@ -846,10 +867,12 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
         /** XXX if we don't have an email, something went wrong.  Should pull the error code properly!  This will
         *  probably require refactoring this function since the local path is different.  ***/
         if (!foundEmail || foundEmail->type != yajl_t_string) {
-          ap_log_rerror(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, 0,r,ERRTAG "Error parsing BrowserID login: no email in payload");
+          ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                        "Error parsing BrowserID login: no email in payload");
           return DECLINED;
         }
-        ap_log_rerror(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0,r,ERRTAG "In post_read_request; got email %s", foundEmail->u.string);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                      "In post_read_request; got email %s", foundEmail->u.string);
         createSessionCookie(r, conf, foundEmail->u.string);
 
         /* redirect to the requested resource */
@@ -858,8 +881,10 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
         return HTTP_TEMPORARY_REDIRECT;
       } 
     }
-  } else {
-   ap_log_rerror(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, 0,r,ERRTAG "In post_read_request; this is a POST - skipping it for now");
+  }
+  else {
+   ap_log_rerror(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
+                 "In post_read_request; this is a POST - skipping it for now");
   }  
   return DECLINED;
 }
