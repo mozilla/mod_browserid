@@ -247,21 +247,6 @@ unsigned char c;
 #define VERSION "1.0.0"
 #define unless(c) if(!(c))
 
-/* apache module name */
-module AP_MODULE_DECLARE_DATA auth_browserid_module;
-
-/* apache module structure */
-module AP_MODULE_DECLARE_DATA auth_browserid_module =
-{
-    STANDARD20_MODULE_STUFF,
-    create_browserid_config,    /* dir config creator */
-    NULL,                       /* dir merger --- default is to override */
-    NULL,                       /* server config */
-    NULL,                       /* merge server config */
-    Auth_browserid_cmds,        /* command apr_table_t */
-    register_hooks              /* register hooks */
-};
-
 /* config structure */
 typedef struct {
   int 	authBasicFix;
@@ -274,25 +259,6 @@ typedef struct {
   char *verificationServerURL;
   int   verifyLocally;
 } BrowserIDConfigRec;
-
-/************************************************************************************
- *  Apache CONFIG Phase:
- ************************************************************************************/
-static void *create_browserid_config(apr_pool_t *p, char *d)
-{
-    BrowserIDConfigRec *conf     = apr_palloc(p, sizeof(*conf));
-
-    conf->authBasicFix           = 0;  /* do not fix header for php auth by default */
-    conf->authoritative          = 0;  /* not by default */
-    conf->cookieName             = apr_pstrdup(p,"BrowserID");
-    conf->forwardedRequestHeader = NULL; /* pass the authenticated user, signed, as an HTTP header */
-    conf->logoutPath             = NULL;
-    conf->serverSecret           = "BrowserIDSecret";
-    conf->submitPath             = "/mod_browserid_submit";
-    conf->verificationServerURL  = NULL;
-    conf->verifyLocally          = 0;
-    return conf;
-}
 
 /* apache config function of the module */
 static const command_rec Auth_browserid_cmds[] =
@@ -335,6 +301,58 @@ static const command_rec Auth_browserid_cmds[] =
 
     {NULL}
 };
+
+/* function declarations */
+static void *create_browserid_config(apr_pool_t *p, char *d);
+static int Auth_browserid_check_auth(request_rec *r);
+static int Auth_browserid_check_cookie(request_rec *r);
+static int Auth_browserid_fixups(request_rec *r);
+static void createSessionCookie(request_rec *r, BrowserIDConfigRec *conf, char *identity);
+static char * extract_cookie(request_rec *r, const char *szCookie_name);
+static void fix_headers_in(request_rec *r,char*szPassword);
+static char *generateSignature(request_rec *r, BrowserIDConfigRec *conf, char *userAddress);
+//apr_table_t *parseArgs(request_rec *r, char *argStr);
+static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf);
+static int processLogout(request_rec *r, BrowserIDConfigRec *conf);
+static void register_hooks(apr_pool_t *p);
+static int user_in_file(request_rec *r, char *username, char *filename);
+static int validateCookie(request_rec *r, BrowserIDConfigRec *conf, char *szCookieValue);
+static char *verifyAssertionRemote(request_rec *r, BrowserIDConfigRec *conf, char *assertionText);
+
+/* apache module name */
+module AP_MODULE_DECLARE_DATA auth_browserid_module;
+
+/* apache module structure */
+module AP_MODULE_DECLARE_DATA auth_browserid_module =
+{
+    STANDARD20_MODULE_STUFF,
+    create_browserid_config,    /* dir config creator */
+    NULL,                       /* dir merger --- default is to override */
+    NULL,                       /* server config */
+    NULL,                       /* merge server config */
+    Auth_browserid_cmds,        /* command apr_table_t */
+    register_hooks              /* register hooks */
+};
+
+
+/************************************************************************************
+ *  Apache CONFIG Phase:
+ ************************************************************************************/
+static void *create_browserid_config(apr_pool_t *p, char *d)
+{
+    BrowserIDConfigRec *conf     = apr_palloc(p, sizeof(*conf));
+
+    conf->authBasicFix           = 0;  /* do not fix header for php auth by default */
+    conf->authoritative          = 0;  /* not by default */
+    conf->cookieName             = apr_pstrdup(p,"BrowserID");
+    conf->forwardedRequestHeader = NULL; /* pass the authenticated user, signed, as an HTTP header */
+    conf->logoutPath             = NULL;
+    conf->serverSecret           = "BrowserIDSecret";
+    conf->submitPath             = "/mod_browserid_submit";
+    conf->verificationServerURL  = NULL;
+    conf->verifyLocally          = 0;
+    return conf;
+}
 
 /* Look through the 'Cookie' headers for the indicated cookie; extract it
  * and URL-unescape it. Return the cookie on success, NULL on failure. */
@@ -504,7 +522,7 @@ static int Auth_browserid_check_cookie(request_rec *r)
                   "ap_hook_check_user_id in - Auth_browserid_check_cookie");
 
     /* get apache config */
-    conf = ap_get_module_config(r->per_dir_config, &mod_auth_browserid_module);
+    conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
     unless(conf->authoritative)
         return DECLINED;
@@ -574,7 +592,7 @@ static int Auth_browserid_check_auth(request_rec *r)
   char *szRequire_cmd                = NULL;
   
   /* get apache config */
-  conf = ap_get_module_config(r->per_dir_config, &mod_auth_browserid_module);
+  conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
   /* check if this module is authoritative */
   unless(conf->authoritative)
@@ -585,7 +603,8 @@ static int Auth_browserid_check_auth(request_rec *r)
   reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
 
   /* decline if no require line found */
-  if (!reqs_arr) return DECLINED;
+  if (!reqs_arr)
+    return DECLINED;
 
   /* walk through the array to check each require command */
   for (x = 0; x < reqs_arr->nelts; x++) {
@@ -616,18 +635,20 @@ static int Auth_browserid_check_auth(request_rec *r)
       ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r ,ERRTAG  "user '%s' is authorized",r->user);
       return OK;
     }
-    /* check for users in a file */ 
+    /* check for users in a file */
     else if (!strcmp("userfile",szRequire_cmd)) {
       szFileName = ap_getword_conf(r->pool, &szRequireLine);
       if (!user_in_file(r, r->user, szFileName)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r ,ERRTAG  "user '%s' is not in username list at '%s'",r->user,szFileName);
         return HTTP_FORBIDDEN;
-      } else {
-      return OK;
+      }
+      else {
+        return OK;
       }
     }
   }
   ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r ,ERRTAG  "user '%s' is not authorized",r->user);
+
   /* forbid by default */
   return HTTP_FORBIDDEN;
 }
@@ -878,7 +899,7 @@ static int Auth_browserid_fixups(request_rec *r)
     BrowserIDConfigRec *conf=NULL;
 
     /* get apache config */
-    conf = ap_get_module_config(r->per_dir_config, &mod_auth_browserid_module);
+    conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
     if (conf->submitPath && !strcmp(r->uri, conf->submitPath)) {
       return processAssertionFormSubmit(r, conf);
