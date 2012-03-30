@@ -104,7 +104,8 @@ httpd.conf:
 /id_login/browserid_login.php:
 
 ```
-  <?php?><html>
+  <?php
+  <html>
   <head>
   <script src="https://browserid.org/include.js" type="text/javascript"></script>
   <title>Authentication</title>
@@ -126,6 +127,7 @@ httpd.conf:
         });
   }
   </script></body></html>
+  ?>
 ```
 /usr/local/apache2/htdocs/id_demo_users:
 
