@@ -245,7 +245,7 @@ unsigned char c;
 
 #define ERRTAG "Auth_browserID: "
 #define VERSION "1.0.0"
-#define unless(c) if(!(c))
+#define UNLESS(c) if(!(c))
 
 /* config structure */
 typedef struct {
@@ -361,13 +361,13 @@ static void *create_browserid_config(apr_pool_t *p, char *d)
 
 /* Look through the 'Cookie' headers for the indicated cookie; extract it
  * and URL-unescape it. Return the cookie on success, NULL on failure. */
-static char * extract_cookie(request_rec *r, const char *szCookie_name) 
+static char * extract_cookie(request_rec *r, const char *szCookie_name)
 {
   char *szRaw_cookie_start=NULL, *szRaw_cookie_end;
   char *szCookie;
   /* get cookie string */
   char*szRaw_cookie = (char*)apr_table_get( r->headers_in, "Cookie");
-  unless(szRaw_cookie) return 0;
+  UNLESS(szRaw_cookie) return 0;
 
   /* loop to search cookie name in cookie header */
   do {
@@ -375,22 +375,22 @@ static char * extract_cookie(request_rec *r, const char *szCookie_name)
                   "Checking cookie %s, looking for %s", szRaw_cookie, szCookie_name);
 
     /* search cookie name in cookie string */
-    unless (szRaw_cookie =strstr(szRaw_cookie, szCookie_name)) return 0;
+    UNLESS (szRaw_cookie =strstr(szRaw_cookie, szCookie_name)) return 0;
     szRaw_cookie_start=szRaw_cookie;
     /* search '=' */
-    unless (szRaw_cookie = strchr(szRaw_cookie, '=')) return 0;
+    UNLESS (szRaw_cookie = strchr(szRaw_cookie, '=')) return 0;
   } while (strncmp(szCookie_name,szRaw_cookie_start,szRaw_cookie-szRaw_cookie_start)!=0);
 
   /* skip '=' */
   szRaw_cookie++;
 
   /* search end of cookie name value: ';' or end of cookie strings */
-  unless ((szRaw_cookie_end = strchr(szRaw_cookie, ';')) || (szRaw_cookie_end = strchr(szRaw_cookie, '\0'))) return 0;
+  UNLESS ((szRaw_cookie_end = strchr(szRaw_cookie, ';')) || (szRaw_cookie_end = strchr(szRaw_cookie, '\0'))) return 0;
 
   /* dup the value string found in apache pool and set the result pool ptr to szCookie ptr */
-  unless (szCookie = apr_pstrndup(r->pool, szRaw_cookie, szRaw_cookie_end-szRaw_cookie)) return 0;
-  /* unescape the value string */ 
-  unless (ap_unescape_url(szCookie) == 0) return 0;
+  UNLESS (szCookie = apr_pstrndup(r->pool, szRaw_cookie, szRaw_cookie_end-szRaw_cookie)) return 0;
+  /* unescape the value string */
+  UNLESS (ap_unescape_url(szCookie) == 0) return 0;
 
   ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,
                 ERRTAG "finished cookie scan, returning %s", szCookie);
@@ -415,12 +415,12 @@ static int user_in_file(request_rec *r, char *username, char *filename)
 
   int found = 0;
   while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
-    
+
     /* Skip # or blank lines. */
     if ((l[0] == '#') || (!l[0])) {
       continue;
     }
-    
+
     if (!strcmp(username, l)) {
       found = 1;
       break;
@@ -455,7 +455,7 @@ static void fix_headers_in(request_rec *r, char*szPassword)
 
     /* alloc memory for the estimated encode size of the username */
     char *szB64_enc_user=(char*)apr_palloc(r->pool,apr_base64_encode_len(strlen(szUser))+1);
-    unless (szB64_enc_user) {
+    UNLESS (szB64_enc_user) {
       ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                     "memory alloc failed!");
       return;
@@ -484,7 +484,7 @@ static char *generateSignature(request_rec *r, BrowserIDConfigRec *conf, char *u
     SHA1Update(&context, (unsigned char*)conf->serverSecret, strlen(conf->serverSecret));
     unsigned char digest[20];
     SHA1Final(digest, &context);
-    
+
     char *digest64 = apr_palloc(r->pool, apr_base64_encode_len(20));
     apr_base64_encode(digest64, (char*)digest, 20);
     return digest64;
@@ -513,7 +513,7 @@ static int validateCookie(request_rec *r, BrowserIDConfigRec *conf, char *szCook
       free(digest64);
       return 1;
     }
-    
+
     /* Cookie is good: set r->user */
     r->user = (char*)addr;
     return 0;
@@ -536,26 +536,26 @@ static int Auth_browserid_check_cookie(request_rec *r)
     /* get apache config */
     conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
-    unless(conf->authoritative)
+    UNLESS(conf->authoritative)
       return DECLINED;
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,ERRTAG
                   "AuthType are '%s'", ap_auth_type(r));
 
-    unless(strncmp("BrowserID",ap_auth_type(r),9)==0) {
+    UNLESS(strncmp("BrowserID",ap_auth_type(r),9)==0) {
       ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
                     "Auth type must be 'BrowserID'");
       return HTTP_UNAUTHORIZED;
     }
 
-    unless(conf->cookieName) {
+    UNLESS(conf->cookieName) {
       ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                     "No Auth_browserid_CookieName specified");
       return HTTP_UNAUTHORIZED;
     }
 
     /* get cookie who are named cookieName */
-    unless(szCookieValue = extract_cookie(r, conf->cookieName)) {
+    UNLESS(szCookieValue = extract_cookie(r, conf->cookieName)) {
       ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
                     "BrowserID cookie not found; not authorized! RemoteIP:%s",szRemoteIP);
       return HTTP_UNAUTHORIZED;
@@ -603,12 +603,12 @@ static int Auth_browserid_check_auth(request_rec *r)
   const char *szRequireLine          = NULL;
   char *szFileName                   = NULL;
   char *szRequire_cmd                = NULL;
-  
+
   /* get apache config */
   conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
   /* check if this module is authoritative */
-  unless(conf->authoritative)
+  UNLESS(conf->authoritative)
     return DECLINED;
 
   /* get require line */
