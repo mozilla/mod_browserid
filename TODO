@@ -48,11 +48,6 @@ E-mail to dev-identity list of 29 Mar:
 + incorporate other observations in previous e-mail to dev-identity
 list on 28 Mar [see above]
 
-+ code cleanup
-  - minor typos
-  - rearrange some functions for easier maintenance (e.g., keep those
-    modifying struct BrowserIDConfigRec closer to it)
-
 + add capability to use a dbm for authorized user e-mail addresses
 
 + more examples
@@ -75,3 +70,8 @@ Rationale:  More like other module names in existing set shipping with Apache2.
 
 Example of a current one:
 LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
+
++ code cleanup [mostly DONE ongoing]
+  - minor typos
+  - rearrange some functions for easier maintenance (e.g., keep those
+    modifying struct BrowserIDConfigRec closer to it)
