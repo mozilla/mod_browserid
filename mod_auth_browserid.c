@@ -264,6 +264,8 @@ typedef struct {
 static const command_rec Auth_browserid_cmds[] =
 {
 
+  /* from http_config.h: AP_INIT_FLAG This configuration directive
+     takes a flag (on/off) [the flag is an int, probably a macro] as a argument */
   AP_INIT_FLAG("AuthBrowserIDSimulateAuthBasic", ap_set_flag_slot,
                (void *)APR_OFFSETOF(BrowserIDConfigRec, authBasicFix),
                OR_AUTHCFG, "Set to 'yes' to enable creation of a synthetic Basic Authorization header containing the username."),
@@ -272,10 +274,12 @@ static const command_rec Auth_browserid_cmds[] =
                (void *)APR_OFFSETOF(BrowserIDConfigRec, authoritative),
                OR_AUTHCFG, "Set to 'yes' to allow access control to be passed along to lower modules; set to 'no' by default."),
 
+  /* from http_config.h: AP_INIT_TAKE1 This configuration directive takes 1 argument */
   AP_INIT_TAKE1("AuthBrowserIDCookieName", ap_set_string_slot,
                 (void *)APR_OFFSETOF(BrowserIDConfigRec, cookieName),
                 OR_AUTHCFG, "Name of cookie to set."),
 
+  /* TB: doesn't appear to be used at the moment, looks like it could be a flag instead */
   AP_INIT_TAKE1("AuthBrowserIDSetHTTPHeader", ap_set_string_slot,
                 (void *)APR_OFFSETOF(BrowserIDConfigRec, forwardedRequestHeader),
                 OR_AUTHCFG, "Set to 'yes' to forward a signed HTTP header containing the verified identity; set to 'no' by default."),
@@ -893,8 +897,8 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
 static int processLogout(request_rec *r, BrowserIDConfigRec *conf)
 {
   apr_table_set(r->err_headers_out, "Set-Cookie", 
-    apr_psprintf(r->pool, "%s=; Path=/; Expires=Thu, 01-Jan-1970 00:00:01 GMT", 
-      conf->cookieName));
+                apr_psprintf(r->pool, "%s=; Path=/; Expires=Thu, 01-Jan-1970 00:00:01 GMT",
+                             conf->cookieName));
 
   if (r->args) {
     if ( strlen(r->args) > 16384 ) {
@@ -922,20 +926,20 @@ static int processLogout(request_rec *r, BrowserIDConfigRec *conf)
  */
 static int Auth_browserid_fixups(request_rec *r)
 {
-    BrowserIDConfigRec *conf=NULL;
+  BrowserIDConfigRec *conf=NULL;
 
-    /* get apache config */
-    conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
+  /* get apache config */
+  conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
-    if (conf->submitPath && !strcmp(r->uri, conf->submitPath)) {
-      return processAssertionFormSubmit(r, conf);
-    }
-    else if (conf->logoutPath && !strcmp(r->uri, conf->logoutPath)) {
-      return processLogout(r, conf);
-    }
-    
-    /* otherwise we don't care */
-    return DECLINED;
+  if (conf->submitPath && !strcmp(r->uri, conf->submitPath)) {
+    return processAssertionFormSubmit(r, conf);
+  }
+  else if (conf->logoutPath && !strcmp(r->uri, conf->logoutPath)) {
+    return processLogout(r, conf);
+  }
+
+  /* otherwise we don't care */
+  return DECLINED;
 }
 
 
@@ -944,7 +948,7 @@ static int Auth_browserid_fixups(request_rec *r)
  **************************************************/
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(Auth_browserid_check_cookie, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_auth_checker(Auth_browserid_check_auth, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_fixups(Auth_browserid_fixups, NULL, NULL, APR_HOOK_FIRST);
+  ap_hook_check_user_id(Auth_browserid_check_cookie, NULL, NULL, APR_HOOK_FIRST);
+  ap_hook_auth_checker(Auth_browserid_check_auth, NULL, NULL, APR_HOOK_FIRST);
+  ap_hook_fixups(Auth_browserid_fixups, NULL, NULL, APR_HOOK_FIRST);
 }
