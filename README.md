@@ -97,7 +97,7 @@ httpd.conf:
    # to redirect unauthorized users to the login page
    ErrorDocument 401 "/id_login/browserid_login.php"
 
-   require userfile /usr/local/apache2/htdocs/id_demo_users
+   Require userfile /usr/local/apache2/htdocs/id_demo_users
   </Directory>
 ```
 
