@@ -80,24 +80,26 @@ httpd.conf:
   LoadModule mod_auth_browserid_module modules/mod_auth_browserid.so
 
   <Directory /usr/local/apache2/htdocs/id_login >
-  AuthBrowserIDCookieName myauthcookie
-  AuthBrowserIDSubmitPath "/id_login/submit"
-  AuthBrowserIDVerificationServerURL "https://browserid.org/verify"
+    AuthBrowserIDCookieName myauthcookie
+    AuthBrowserIDSubmitPath "/id_login/submit"
+    AuthBrowserIDVerificationServerURL "https://browserid.org/verify"
   </Directory>
   
   <Directory /usr/local/apache2/htdocs/id_demo/ >
-   AuthType BrowserID
-   AuthBrowserIDAuthoritative on
-   AuthBrowserIDCookieName myauthcookie
-   AuthBrowserIDVerificationServerURL "https://browserid.org/verify"
+    AuthType BrowserID
+    AuthBrowserIDAuthoritative on
+    AuthBrowserIDCookieName myauthcookie
+    AuthBrowserIDSecret
+    AuthBrowserIDVerificationServerURL "https://browserid.org/verify"
   
-   # must be set (apache mandatory) but not used by the module
-   AuthName "My Login"
+    # must be set (apache mandatory) but not used by the module
+    AuthName "My Login"
   
-   # to redirect unauthorized users to the login page
-   ErrorDocument 401 "/id_login/browserid_login.php"
+    # to redirect unauthorized users to the login page
+    ErrorDocument 401 "/id_login/browserid_login.php"
 
-   Require userfile /usr/local/apache2/htdocs/id_demo_users
+    # file with authorized user names (e-mail addresses)
+    Require userfile /usr/local/apache2/htdocs/id_demo_users
   </Directory>
 ```
 
