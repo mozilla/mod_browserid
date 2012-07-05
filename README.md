@@ -89,12 +89,12 @@ httpd.conf:
     AuthType BrowserID
     AuthBrowserIDAuthoritative on
     AuthBrowserIDCookieName myauthcookie
-    AuthBrowserIDSecret
+    AuthBrowserIDSecret aaz5R2w42^24A3uM&75Z822M79xQ82
     AuthBrowserIDVerificationServerURL "https://browserid.org/verify"
-  
+    
     # must be set (apache mandatory) but not used by the module
     AuthName "My Login"
-  
+
     # to redirect unauthorized users to the login page
     ErrorDocument 401 "/id_login/browserid_login.php"
 
