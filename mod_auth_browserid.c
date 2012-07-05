@@ -312,8 +312,8 @@ void SHA1Final(unsigned char digest[20], SHA1_CTX *context)
 
 /* config structure */
 typedef struct {
-    int 	authBasicFix;
-    int 	authoritative;
+    int   authBasicFix;
+    int   authoritative;
     char *cookieName;
     char *forwardedRequestHeader;
     char *logoutPath;
