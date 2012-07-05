@@ -4,7 +4,7 @@ style=k&r
 # set standard spacing
 indent=spaces=4
 
-# set pointer format to existing
+# set pointer format to existing predominat style
 align-pointer=name
 
 # Indent goto labels rather than making them flush on the left

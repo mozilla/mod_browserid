@@ -56,9 +56,9 @@ typedef struct {
 } SHA1_CTX;
 
 void SHA1Transform(u_int32_t state[5], const unsigned char buffer[64]);
-void SHA1Init(SHA1_CTX* context);
-void SHA1Update(SHA1_CTX* context, const unsigned char* data, u_int32_t len);
-void SHA1Final(unsigned char digest[20], SHA1_CTX* context);
+void SHA1Init(SHA1_CTX *context);
+void SHA1Update(SHA1_CTX *context, const unsigned char *data, u_int32_t len);
+void SHA1Final(unsigned char digest[20], SHA1_CTX *context);
 
 
 /* ================ sha1.c ================ */
@@ -113,7 +113,7 @@ void SHA1Transform(u_int32_t state[5], const unsigned char buffer[64])
      * And the result is written through.  I threw a "const" in, hoping
      * this will cause a diagnostic.
      */
-    CHAR64LONG16* block = (const CHAR64LONG16*)buffer;
+    CHAR64LONG16 *block = (const CHAR64LONG16 *)buffer;
 #endif
     /* Copy context->state[] to working vars */
     a = state[0];
@@ -218,7 +218,7 @@ void SHA1Transform(u_int32_t state[5], const unsigned char buffer[64])
 
 /* SHA1Init - Initialize new context */
 
-void SHA1Init(SHA1_CTX* context)
+void SHA1Init(SHA1_CTX *context)
 {
     /* SHA1 initialization constants */
     context->state[0] = 0x67452301;
@@ -232,7 +232,7 @@ void SHA1Init(SHA1_CTX* context)
 
 /* Run your data through this. */
 
-void SHA1Update(SHA1_CTX* context, const unsigned char* data, u_int32_t len)
+void SHA1Update(SHA1_CTX *context, const unsigned char *data, u_int32_t len)
 {
     u_int32_t i;
     u_int32_t j;
@@ -260,7 +260,7 @@ void SHA1Update(SHA1_CTX* context, const unsigned char* data, u_int32_t len)
 
 /* Add padding and return the message digest. */
 
-void SHA1Final(unsigned char digest[20], SHA1_CTX* context)
+void SHA1Final(unsigned char digest[20], SHA1_CTX *context)
 {
     unsigned i;
     unsigned char finalcount[8];
@@ -280,15 +280,15 @@ void SHA1Final(unsigned char digest[20], SHA1_CTX* context)
 
         for (j = 0; j < 4; t >>= 8, j++) {
             *--fcp = (unsigned char) t
-        }
-    }
+                 }
+             }
 #else
     for (i = 0; i < 8; i++) {
         finalcount[i] = (unsigned char)((context->count[(i >= 4 ? 0 : 1)]
                                          >> ((3 - (i & 3)) * 8)) & 255); /* Endian independent */
     }
 #endif
-    c = 0200;
+             c = 0200;
     SHA1Update(context, &c, 1);
     while ((context->count[0] & 504) != 448) {
         c = 0000;
@@ -375,8 +375,8 @@ static int Auth_browserid_check_auth(request_rec *r);
 static int Auth_browserid_check_cookie(request_rec *r);
 static int Auth_browserid_fixups(request_rec *r);
 static void createSessionCookie(request_rec *r, BrowserIDConfigRec *conf, char *identity);
-static char * extract_cookie(request_rec *r, const char *szCookie_name);
-static void fix_headers_in(request_rec *r, char*szPassword);
+static char *extract_cookie(request_rec *r, const char *szCookie_name);
+static void fix_headers_in(request_rec *r, char *szPassword);
 static char *generateSignature(request_rec *r, BrowserIDConfigRec *conf, char *userAddress);
 apr_table_t *parseArgs(request_rec *r, char *argStr);
 static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf);
@@ -422,12 +422,12 @@ static void *create_browserid_config(apr_pool_t *p, char *d)
 
 /* Look through the 'Cookie' headers for the indicated cookie; extract it
  * and URL-unescape it. Return the cookie on success, NULL on failure. */
-static char * extract_cookie(request_rec *r, const char *szCookie_name)
+static char *extract_cookie(request_rec *r, const char *szCookie_name)
 {
     char *szRaw_cookie_start = NULL, *szRaw_cookie_end;
     char *szCookie;
     /* get cookie string */
-    char*szRaw_cookie = (char*)apr_table_get(r->headers_in, "Cookie");
+    char *szRaw_cookie = (char *)apr_table_get(r->headers_in, "Cookie");
     UNLESS(szRaw_cookie) return 0;
 
     /* loop to search cookie name in cookie header */
@@ -497,7 +497,7 @@ static int user_in_file(request_rec *r, char *username, char *filename)
    application. e.g. php uses the Authorization header when logging the request
    in apache and not r->user (like it ought to). It is applied after the request
    has been authenticated. */
-static void fix_headers_in(request_rec *r, char*szPassword)
+static void fix_headers_in(request_rec *r, char *szPassword)
 {
     char *szUser = NULL;
     /* Set an Authorization header in the input request table for php
@@ -511,14 +511,14 @@ static void fix_headers_in(request_rec *r, char*szPassword)
 
         /* concat username and ':' */
         if (szPassword != NULL) {
-            szUser = (char*)apr_pstrcat(r->pool, r->user, ":", szPassword, NULL);
+            szUser = (char *)apr_pstrcat(r->pool, r->user, ":", szPassword, NULL);
         }
         else {
-            szUser = (char*)apr_pstrcat(r->pool, r->user, ":", NULL);
+            szUser = (char *)apr_pstrcat(r->pool, r->user, ":", NULL);
         }
 
         /* alloc memory for the estimated encode size of the username */
-        char *szB64_enc_user = (char*)apr_palloc(r->pool, apr_base64_encode_len(strlen(szUser)) + 1);
+        char *szB64_enc_user = (char *)apr_palloc(r->pool, apr_base64_encode_len(strlen(szUser)) + 1);
         UNLESS(szB64_enc_user) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                           "memory alloc failed!");
@@ -529,7 +529,7 @@ static void fix_headers_in(request_rec *r, char*szPassword)
         apr_base64_encode(szB64_enc_user, szUser, strlen(szUser));
 
         /* set authorization header */
-        apr_table_set(r->headers_in, "Authorization", (char*)apr_pstrcat(r->pool, "Basic ", szB64_enc_user, NULL));
+        apr_table_set(r->headers_in, "Authorization", (char *)apr_pstrcat(r->pool, "Basic ", szB64_enc_user, NULL));
 
         /* force auth type to basic */
         r->ap_auth_type = apr_pstrdup(r->pool, "Basic");
@@ -544,13 +544,13 @@ static char *generateSignature(request_rec *r, BrowserIDConfigRec *conf, char *u
 {
     SHA1_CTX context;
     SHA1Init(&context);
-    SHA1Update(&context, (unsigned char*)userAddress, strlen(userAddress));
-    SHA1Update(&context, (unsigned char*)conf->serverSecret, strlen(conf->serverSecret));
+    SHA1Update(&context, (unsigned char *)userAddress, strlen(userAddress));
+    SHA1Update(&context, (unsigned char *)conf->serverSecret, strlen(conf->serverSecret));
     unsigned char digest[20];
     SHA1Final(digest, &context);
 
     char *digest64 = apr_palloc(r->pool, apr_base64_encode_len(20));
-    apr_base64_encode(digest64, (char*)digest, 20);
+    apr_base64_encode(digest64, (char *)digest, 20);
     return digest64;
 }
 
@@ -579,7 +579,7 @@ static int validateCookie(request_rec *r, BrowserIDConfigRec *conf, char *szCook
     }
 
     /* Cookie is good: set r->user */
-    r->user = (char*)addr;
+    r->user = (char *)addr;
     return 0;
 }
 
@@ -816,9 +816,9 @@ static char *verifyAssertionRemote(request_rec *r, BrowserIDConfigRec *conf, cha
 /* Parse x-www-url-formencoded args */
 apr_table_t *parseArgs(request_rec *r, char *argStr)
 {
-    char* pair ;
-    char* last = NULL ;
-    char* eq ;
+    char *pair ;
+    char *last = NULL ;
+    char *eq ;
 
     apr_table_t *vars = apr_table_make(r->pool, 10) ;
     char *delim = "&";
@@ -884,7 +884,7 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
             /* verify the assertion... */
             yajl_val parsed_result = NULL;
             if (conf->verificationServerURL) {
-                char *assertionResult = verifyAssertionRemote(r, conf, (char*)assertionParsed);
+                char *assertionResult = verifyAssertionRemote(r, conf, (char *)assertionParsed);
                 if (assertionResult) {
                     char errorBuffer[256];
                     parsed_result = yajl_tree_parse(assertionResult, errorBuffer, 255);
@@ -935,7 +935,7 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
                 char *parsePath[2];
                 parsePath[0] = "email";
                 parsePath[1] = NULL;
-                yajl_val foundEmail = yajl_tree_get(parsed_result, (const char**)parsePath, yajl_t_any);
+                yajl_val foundEmail = yajl_tree_get(parsed_result, (const char **)parsePath, yajl_t_any);
 
                 /** XXX if we don't have an email, something went wrong.  Should pull the error code properly!  This will
                 *  probably require refactoring this function since the local path is different.  ***/
