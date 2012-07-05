@@ -1,8 +1,11 @@
 # Use k&r styling
 style=k&r
 
+# set standard spacing
+indent=4
+
 # Enable support for mixed tabs and spaces
-indent=force-tab-x
+indent=force-tab
 
 # Indent goto labels rather than making them flush on the left
 indent-labels
@@ -14,7 +17,7 @@ indent-switches
 min-conditional-indent=0
 
 # Allow deeper indenting of statements
-max-instatement-indent=120
+max-instatement-indent=79
 
 # Pad operators
 #pad-oper
