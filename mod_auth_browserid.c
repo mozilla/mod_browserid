@@ -99,11 +99,11 @@ void SHA1Final(unsigned char digest[20], SHA1_CTX* context);
 
 void SHA1Transform(u_int32_t state[5], const unsigned char buffer[64])
 {
-u_int32_t a, b, c, d, e;
-typedef union {
-    unsigned char c[64];
-    u_int32_t l[16];
-} CHAR64LONG16;
+    u_int32_t a, b, c, d, e;
+    typedef union {
+        unsigned char c[64];
+        u_int32_t l[16];
+    } CHAR64LONG16;
 #ifdef SHA1HANDSOFF
 CHAR64LONG16 block[1];  /* use array to appear as a pointer */
     memcpy(block, buffer, 64);
@@ -113,7 +113,7 @@ CHAR64LONG16 block[1];  /* use array to appear as a pointer */
      * And the result is written through.  I threw a "const" in, hoping
      * this will cause a diagnostic.
      */
-CHAR64LONG16* block = (const CHAR64LONG16*)buffer;
+    CHAR64LONG16* block = (const CHAR64LONG16*)buffer;
 #endif
     /* Copy context->state[] to working vars */
     a = state[0];
@@ -174,8 +174,8 @@ void SHA1Init(SHA1_CTX* context)
 
 void SHA1Update(SHA1_CTX* context, const unsigned char* data, u_int32_t len)
 {
-u_int32_t i;
-u_int32_t j;
+    u_int32_t i;
+    u_int32_t j;
 
     j = context->count[0];
     if ((context->count[0] += len << 3) < j)
@@ -371,14 +371,14 @@ static char * extract_cookie(request_rec *r, const char *szCookie_name)
 
   /* loop to search cookie name in cookie header */
   do {
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
-                  "Checking cookie %s, looking for %s", szRaw_cookie, szCookie_name);
+      ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                    "Checking cookie %s, looking for %s", szRaw_cookie, szCookie_name);
 
-    /* search cookie name in cookie string */
-    UNLESS (szRaw_cookie =strstr(szRaw_cookie, szCookie_name)) return 0;
-    szRaw_cookie_start=szRaw_cookie;
-    /* search '=' */
-    UNLESS (szRaw_cookie = strchr(szRaw_cookie, '=')) return 0;
+      /* search cookie name in cookie string */
+      UNLESS (szRaw_cookie =strstr(szRaw_cookie, szCookie_name)) return 0;
+      szRaw_cookie_start=szRaw_cookie;
+      /* search '=' */
+      UNLESS (szRaw_cookie = strchr(szRaw_cookie, '=')) return 0;
   } while (strncmp(szCookie_name,szRaw_cookie_start,szRaw_cookie-szRaw_cookie_start)!=0);
 
   /* skip '=' */
@@ -408,23 +408,23 @@ static int user_in_file(request_rec *r, char *username, char *filename)
   ap_configfile_t *f;
   status = ap_pcfg_openfile(&f, r->pool, filename);
   if (status != APR_SUCCESS) {
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-		  "Could not open user file: %s", filename);
-    return 0;
+      ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                    "Could not open user file: %s", filename);
+      return 0;
   }
 
   int found = 0;
   while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 
-    /* Skip # or blank lines. */
-    if ((l[0] == '#') || (!l[0])) {
-      continue;
-    }
+      /* Skip # or blank lines. */
+      if ((l[0] == '#') || (!l[0])) {
+          continue;
+      }
 
-    if (!strcmp(username, l)) {
-      found = 1;
-      break;
-    }
+      if (!strcmp(username, l)) {
+          found = 1;
+          break;
+      }
   }
   ap_cfg_closefile(f);
   return found;
@@ -437,41 +437,41 @@ static int user_in_file(request_rec *r, char *username, char *filename)
    has been authenticated. */
 static void fix_headers_in(request_rec *r, char*szPassword)
 {
-  char *szUser=NULL;
- /* Set an Authorization header in the input request table for php and
-  other applications that use it to obtain the username (mainly to fix
-  apache logging of php scripts). We only set this if there is no header
-  already present. */
+    char *szUser = NULL;
+    /* Set an Authorization header in the input request table for php
+       and other applications that use it to obtain the username
+       (mainly to fix apache logging of php scripts). We only set this
+       if there is no header already present. */
 
-  if (apr_table_get(r->headers_in,"Authorization") == NULL) {
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
-                  "fixing apache Authorization header for this request using user: %s",r->user);
+    if (apr_table_get(r->headers_in,"Authorization") == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+                      "fixing apache Authorization header for this request using user: %s",r->user);
 
-    /* concat username and ':' */
-    if (szPassword!=NULL)
-      szUser=(char*)apr_pstrcat(r->pool, r->user, ":", szPassword, NULL);
-    else
-      szUser=(char*)apr_pstrcat(r->pool, r->user, ":", NULL);
+        /* concat username and ':' */
+        if (szPassword!=NULL)
+            szUser=(char*)apr_pstrcat(r->pool, r->user, ":", szPassword, NULL);
+        else
+            szUser=(char*)apr_pstrcat(r->pool, r->user, ":", NULL);
 
-    /* alloc memory for the estimated encode size of the username */
-    char *szB64_enc_user=(char*)apr_palloc(r->pool,apr_base64_encode_len(strlen(szUser))+1);
-    UNLESS (szB64_enc_user) {
-      ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
-                    "memory alloc failed!");
-      return;
+        /* alloc memory for the estimated encode size of the username */
+        char *szB64_enc_user=(char*)apr_palloc(r->pool,apr_base64_encode_len(strlen(szUser))+1);
+        UNLESS (szB64_enc_user) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                          "memory alloc failed!");
+            return;
+        }
+
+        /* encode username in base64 format */
+        apr_base64_encode(szB64_enc_user,szUser,strlen(szUser));
+
+        /* set authorization header */
+        apr_table_set(r->headers_in,"Authorization", (char*)apr_pstrcat(r->pool,"Basic ",szB64_enc_user,NULL));
+
+        /* force auth type to basic */
+        r->ap_auth_type=apr_pstrdup(r->pool,"Basic");
     }
 
-    /* encode username in base64 format */
-    apr_base64_encode(szB64_enc_user,szUser,strlen(szUser));
-
-    /* set authorization header */
-    apr_table_set(r->headers_in,"Authorization", (char*)apr_pstrcat(r->pool,"Basic ",szB64_enc_user,NULL));
-
-    /* force auth type to basic */
-    r->ap_auth_type=apr_pstrdup(r->pool,"Basic");
-  }
-
- return;
+    return;
 }
 
 /** Generates a signature with the given inputs, returning a Base64-encoded
@@ -497,9 +497,9 @@ static int validateCookie(request_rec *r, BrowserIDConfigRec *conf, char *szCook
     char *sig = NULL;
     char *addr = apr_strtok(szCookieValue, "|", &sig);
     if (!addr) {
-      ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
-                    "malformed BrowserID cookie");
-      return 1;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
+                      "malformed BrowserID cookie");
+        return 1;
     }
 
     char *digest64 = generateSignature(r, conf, addr);
@@ -509,9 +509,9 @@ static int validateCookie(request_rec *r, BrowserIDConfigRec *conf, char *szCook
 
     /* paranoia indicates that we should use a time-invariant compare here */
     if (strcmp(digest64, sig)) {
-      ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG "invalid BrowserID cookie");
-      free(digest64);
-      return 1;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG "invalid BrowserID cookie");
+        free(digest64);
+        return 1;
     }
 
     /* Cookie is good: set r->user */
@@ -542,32 +542,32 @@ static int Auth_browserid_check_cookie(request_rec *r)
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,ERRTAG
                   "AuthType are '%s'", ap_auth_type(r));
 
-    UNLESS(strncmp("BrowserID",ap_auth_type(r),9)==0) {
-      ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
-                    "Auth type must be 'BrowserID'");
-      return HTTP_UNAUTHORIZED;
+    UNLESS(strncmp("BrowserID",ap_auth_type(r),9) == 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
+                      "Auth type must be 'BrowserID'");
+        return HTTP_UNAUTHORIZED;
     }
 
     UNLESS(conf->cookieName) {
-      ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
-                    "No Auth_browserid_CookieName specified");
-      return HTTP_UNAUTHORIZED;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
+                      "No Auth_browserid_CookieName specified");
+        return HTTP_UNAUTHORIZED;
     }
 
     /* get cookie who are named cookieName */
     UNLESS(szCookieValue = extract_cookie(r, conf->cookieName)) {
-      ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
-                    "BrowserID cookie not found; not authorized! RemoteIP:%s",szRemoteIP);
-      return HTTP_UNAUTHORIZED;
+        ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
+                      "BrowserID cookie not found; not authorized! RemoteIP:%s",szRemoteIP);
+        return HTTP_UNAUTHORIZED;
     }
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
                   "got cookie; value is %s", szCookieValue);
 
     /* Check cookie validity */
     if (validateCookie(r, conf, szCookieValue)) {
-      ap_log_rerror(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, r, ERRTAG
-                    "Invalid BrowserID cookie: %s", szCookieValue);
-      return HTTP_UNAUTHORIZED;
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, r, ERRTAG
+                      "Invalid BrowserID cookie: %s", szCookieValue);
+        return HTTP_UNAUTHORIZED;
     }
 
     /* set REMOTE_USER var for scripts language */
@@ -579,7 +579,7 @@ static int Auth_browserid_check_cookie(request_rec *r)
 
     /* fix http header for php */
     if (conf->authBasicFix)
-      fix_headers_in(r, "browserid");
+        fix_headers_in(r, "browserid");
 
     /* if all is ok return auth ok */
     return OK;
