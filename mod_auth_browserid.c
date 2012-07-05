@@ -428,7 +428,9 @@ static char *extract_cookie(request_rec *r, const char *szCookie_name)
     char *szCookie;
     /* get cookie string */
     char *szRaw_cookie = (char *)apr_table_get(r->headers_in, "Cookie");
-    UNLESS(szRaw_cookie) return 0;
+    if (!szRaw_cookie) {
+        return 0;
+    }
 
     /* loop to search cookie name in cookie header */
     do {
@@ -436,10 +438,14 @@ static char *extract_cookie(request_rec *r, const char *szCookie_name)
                       "Checking cookie %s, looking for %s", szRaw_cookie, szCookie_name);
 
         /* search cookie name in cookie string */
-        UNLESS(szRaw_cookie = strstr(szRaw_cookie, szCookie_name)) return 0;
+        if (!(szRaw_cookie = strstr(szRaw_cookie, szCookie_name))) {
+            return 0;
+        }
         szRaw_cookie_start = szRaw_cookie;
         /* search '=' */
-        UNLESS(szRaw_cookie = strchr(szRaw_cookie, '=')) return 0;
+        if (!(szRaw_cookie = strchr(szRaw_cookie, '='))) {
+            return 0;
+        }
     }
     while (strncmp(szCookie_name, szRaw_cookie_start, szRaw_cookie - szRaw_cookie_start) != 0);
 
@@ -447,12 +453,19 @@ static char *extract_cookie(request_rec *r, const char *szCookie_name)
     szRaw_cookie++;
 
     /* search end of cookie name value: ';' or end of cookie strings */
-    UNLESS((szRaw_cookie_end = strchr(szRaw_cookie, ';')) || (szRaw_cookie_end = strchr(szRaw_cookie, '\0'))) return 0;
+    if (!((szRaw_cookie_end = strchr(szRaw_cookie, ';')) || (szRaw_cookie_end = strchr(szRaw_cookie, '\0')))) {
+        return 0;
+    }
 
     /* dup the value string found in apache pool and set the result pool ptr to szCookie ptr */
-    UNLESS(szCookie = apr_pstrndup(r->pool, szRaw_cookie, szRaw_cookie_end - szRaw_cookie)) return 0;
+    if (!(szCookie = apr_pstrndup(r->pool, szRaw_cookie, szRaw_cookie_end - szRaw_cookie))) {
+        return 0;
+    }
+
     /* unescape the value string */
-    UNLESS(ap_unescape_url(szCookie) == 0) return 0;
+    if (!(ap_unescape_url(szCookie) == 0)) {
+        return 0;
+    }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,
                   ERRTAG "finished cookie scan, returning %s", szCookie);
@@ -519,7 +532,7 @@ static void fix_headers_in(request_rec *r, char *szPassword)
 
         /* alloc memory for the estimated encode size of the username */
         char *szB64_enc_user = (char *)apr_palloc(r->pool, apr_base64_encode_len(strlen(szUser)) + 1);
-        UNLESS(szB64_enc_user) {
+        if (!szB64_enc_user) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                           "memory alloc failed!");
             return;
@@ -600,27 +613,27 @@ static int Auth_browserid_check_cookie(request_rec *r)
     /* get apache config */
     conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
-    UNLESS(conf->authoritative) {
+    if (!conf->authoritative) {
         return DECLINED;
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
                   "AuthType are '%s'", ap_auth_type(r));
 
-    UNLESS(strncmp("BrowserID", ap_auth_type(r), 9) == 0) {
+    if (!(strncmp("BrowserID", ap_auth_type(r), 9) == 0)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                       "Auth type must be 'BrowserID'");
         return HTTP_UNAUTHORIZED;
     }
 
-    UNLESS(conf->cookieName) {
+    if (!conf->cookieName) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                       "No Auth_browserid_CookieName specified");
         return HTTP_UNAUTHORIZED;
     }
 
     /* get cookie who are named cookieName */
-    UNLESS(szCookieValue = extract_cookie(r, conf->cookieName)) {
+    if (!(szCookieValue = extract_cookie(r, conf->cookieName))) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
                       "BrowserID cookie not found; not authorized! RemoteIP:%s", szRemoteIP);
         return HTTP_UNAUTHORIZED;
@@ -674,8 +687,9 @@ static int Auth_browserid_check_auth(request_rec *r)
     conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
     /* check if this module is authoritative */
-    UNLESS(conf->authoritative)
-    return DECLINED;
+    if (!conf->authoritative) {
+        return DECLINED;
+    }
 
     /* get require line */
     reqs_arr = ap_requires(r);
