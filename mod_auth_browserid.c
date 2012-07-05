@@ -369,7 +369,7 @@ static const command_rec Auth_browserid_cmds[] = {
     {NULL}
 };
 
-/* function declarations */
+/* local function declarations */
 static void *create_browserid_config(apr_pool_t *p, char *d);
 static int Auth_browserid_check_auth(request_rec *r);
 static int Auth_browserid_check_cookie(request_rec *r);
