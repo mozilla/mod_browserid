@@ -370,10 +370,10 @@ static const command_rec Auth_browserid_cmds[] = {
 };
 
 /* local function declarations */
-static void *create_browserid_config(apr_pool_t *p, char *d);
 static int   Auth_browserid_check_auth(request_rec *r);
 static int   Auth_browserid_check_cookie(request_rec *r);
 static int   Auth_browserid_fixups(request_rec *r);
+static void *create_browserid_config(apr_pool_t *p, char *d);
 static void  createSessionCookie(request_rec *r, BrowserIDConfigRec *conf, char *identity);
 static char *extract_cookie(request_rec *r, const char *szCookie_name);
 static void  fix_headers_in(request_rec *r, char *szPassword);
