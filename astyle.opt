@@ -7,6 +7,12 @@ indent=spaces=4
 # Indent goto labels rather than making them flush on the left
 indent-labels
 
+# no cuddled else's!
+break-closing-brackets
+
+# use brackets for one-line conditionals
+add-brackets
+
 # Indent switch cases
 indent-switches
 
@@ -17,7 +23,7 @@ min-conditional-indent=0
 max-instatement-indent=79
 
 # Pad operators
-#pad-oper
+pad-oper
 
 # Tighten parenthesis (unless overridden by other options such as pad-header)
 unpad-paren

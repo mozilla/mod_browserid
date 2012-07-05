@@ -122,86 +122,86 @@ void SHA1Transform(u_int32_t state[5], const unsigned char buffer[64])
     d = state[3];
     e = state[4];
     /* 4 rounds of 20 operations each. Loop unrolled. */
-    R0(a,b,c,d,e, 0);
-    R0(e,a,b,c,d, 1);
-    R0(d,e,a,b,c, 2);
-    R0(c,d,e,a,b, 3);
-    R0(b,c,d,e,a, 4);
-    R0(a,b,c,d,e, 5);
-    R0(e,a,b,c,d, 6);
-    R0(d,e,a,b,c, 7);
-    R0(c,d,e,a,b, 8);
-    R0(b,c,d,e,a, 9);
-    R0(a,b,c,d,e,10);
-    R0(e,a,b,c,d,11);
-    R0(d,e,a,b,c,12);
-    R0(c,d,e,a,b,13);
-    R0(b,c,d,e,a,14);
-    R0(a,b,c,d,e,15);
-    R1(e,a,b,c,d,16);
-    R1(d,e,a,b,c,17);
-    R1(c,d,e,a,b,18);
-    R1(b,c,d,e,a,19);
-    R2(a,b,c,d,e,20);
-    R2(e,a,b,c,d,21);
-    R2(d,e,a,b,c,22);
-    R2(c,d,e,a,b,23);
-    R2(b,c,d,e,a,24);
-    R2(a,b,c,d,e,25);
-    R2(e,a,b,c,d,26);
-    R2(d,e,a,b,c,27);
-    R2(c,d,e,a,b,28);
-    R2(b,c,d,e,a,29);
-    R2(a,b,c,d,e,30);
-    R2(e,a,b,c,d,31);
-    R2(d,e,a,b,c,32);
-    R2(c,d,e,a,b,33);
-    R2(b,c,d,e,a,34);
-    R2(a,b,c,d,e,35);
-    R2(e,a,b,c,d,36);
-    R2(d,e,a,b,c,37);
-    R2(c,d,e,a,b,38);
-    R2(b,c,d,e,a,39);
-    R3(a,b,c,d,e,40);
-    R3(e,a,b,c,d,41);
-    R3(d,e,a,b,c,42);
-    R3(c,d,e,a,b,43);
-    R3(b,c,d,e,a,44);
-    R3(a,b,c,d,e,45);
-    R3(e,a,b,c,d,46);
-    R3(d,e,a,b,c,47);
-    R3(c,d,e,a,b,48);
-    R3(b,c,d,e,a,49);
-    R3(a,b,c,d,e,50);
-    R3(e,a,b,c,d,51);
-    R3(d,e,a,b,c,52);
-    R3(c,d,e,a,b,53);
-    R3(b,c,d,e,a,54);
-    R3(a,b,c,d,e,55);
-    R3(e,a,b,c,d,56);
-    R3(d,e,a,b,c,57);
-    R3(c,d,e,a,b,58);
-    R3(b,c,d,e,a,59);
-    R4(a,b,c,d,e,60);
-    R4(e,a,b,c,d,61);
-    R4(d,e,a,b,c,62);
-    R4(c,d,e,a,b,63);
-    R4(b,c,d,e,a,64);
-    R4(a,b,c,d,e,65);
-    R4(e,a,b,c,d,66);
-    R4(d,e,a,b,c,67);
-    R4(c,d,e,a,b,68);
-    R4(b,c,d,e,a,69);
-    R4(a,b,c,d,e,70);
-    R4(e,a,b,c,d,71);
-    R4(d,e,a,b,c,72);
-    R4(c,d,e,a,b,73);
-    R4(b,c,d,e,a,74);
-    R4(a,b,c,d,e,75);
-    R4(e,a,b,c,d,76);
-    R4(d,e,a,b,c,77);
-    R4(c,d,e,a,b,78);
-    R4(b,c,d,e,a,79);
+    R0(a, b, c, d, e, 0);
+    R0(e, a, b, c, d, 1);
+    R0(d, e, a, b, c, 2);
+    R0(c, d, e, a, b, 3);
+    R0(b, c, d, e, a, 4);
+    R0(a, b, c, d, e, 5);
+    R0(e, a, b, c, d, 6);
+    R0(d, e, a, b, c, 7);
+    R0(c, d, e, a, b, 8);
+    R0(b, c, d, e, a, 9);
+    R0(a, b, c, d, e, 10);
+    R0(e, a, b, c, d, 11);
+    R0(d, e, a, b, c, 12);
+    R0(c, d, e, a, b, 13);
+    R0(b, c, d, e, a, 14);
+    R0(a, b, c, d, e, 15);
+    R1(e, a, b, c, d, 16);
+    R1(d, e, a, b, c, 17);
+    R1(c, d, e, a, b, 18);
+    R1(b, c, d, e, a, 19);
+    R2(a, b, c, d, e, 20);
+    R2(e, a, b, c, d, 21);
+    R2(d, e, a, b, c, 22);
+    R2(c, d, e, a, b, 23);
+    R2(b, c, d, e, a, 24);
+    R2(a, b, c, d, e, 25);
+    R2(e, a, b, c, d, 26);
+    R2(d, e, a, b, c, 27);
+    R2(c, d, e, a, b, 28);
+    R2(b, c, d, e, a, 29);
+    R2(a, b, c, d, e, 30);
+    R2(e, a, b, c, d, 31);
+    R2(d, e, a, b, c, 32);
+    R2(c, d, e, a, b, 33);
+    R2(b, c, d, e, a, 34);
+    R2(a, b, c, d, e, 35);
+    R2(e, a, b, c, d, 36);
+    R2(d, e, a, b, c, 37);
+    R2(c, d, e, a, b, 38);
+    R2(b, c, d, e, a, 39);
+    R3(a, b, c, d, e, 40);
+    R3(e, a, b, c, d, 41);
+    R3(d, e, a, b, c, 42);
+    R3(c, d, e, a, b, 43);
+    R3(b, c, d, e, a, 44);
+    R3(a, b, c, d, e, 45);
+    R3(e, a, b, c, d, 46);
+    R3(d, e, a, b, c, 47);
+    R3(c, d, e, a, b, 48);
+    R3(b, c, d, e, a, 49);
+    R3(a, b, c, d, e, 50);
+    R3(e, a, b, c, d, 51);
+    R3(d, e, a, b, c, 52);
+    R3(c, d, e, a, b, 53);
+    R3(b, c, d, e, a, 54);
+    R3(a, b, c, d, e, 55);
+    R3(e, a, b, c, d, 56);
+    R3(d, e, a, b, c, 57);
+    R3(c, d, e, a, b, 58);
+    R3(b, c, d, e, a, 59);
+    R4(a, b, c, d, e, 60);
+    R4(e, a, b, c, d, 61);
+    R4(d, e, a, b, c, 62);
+    R4(c, d, e, a, b, 63);
+    R4(b, c, d, e, a, 64);
+    R4(a, b, c, d, e, 65);
+    R4(e, a, b, c, d, 66);
+    R4(d, e, a, b, c, 67);
+    R4(c, d, e, a, b, 68);
+    R4(b, c, d, e, a, 69);
+    R4(a, b, c, d, e, 70);
+    R4(e, a, b, c, d, 71);
+    R4(d, e, a, b, c, 72);
+    R4(c, d, e, a, b, 73);
+    R4(b, c, d, e, a, 74);
+    R4(a, b, c, d, e, 75);
+    R4(e, a, b, c, d, 76);
+    R4(d, e, a, b, c, 77);
+    R4(c, d, e, a, b, 78);
+    R4(b, c, d, e, a, 79);
     /* Add the working vars back into context.state[] */
     state[0] += a;
     state[1] += b;
@@ -238,18 +238,22 @@ void SHA1Update(SHA1_CTX* context, const unsigned char* data, u_int32_t len)
     u_int32_t j;
 
     j = context->count[0];
-    if ((context->count[0] += len << 3) < j)
+    if ((context->count[0] += len << 3) < j) {
         context->count[1]++;
-    context->count[1] += (len>>29);
+    }
+    context->count[1] += (len >> 29);
     j = (j >> 3) & 63;
     if ((j + len) > 63) {
-        memcpy(&context->buffer[j], data, (i = 64-j));
+        memcpy(&context->buffer[j], data, (i = 64 - j));
         SHA1Transform(context->state, context->buffer);
         for (; i + 63 < len; i += 64) {
             SHA1Transform(context->state, &data[i]);
         }
         j = 0;
-    } else i = 0;
+    }
+    else {
+        i = 0;
+    }
     memcpy(&context->buffer[j], &data[i], len - i);
 }
 
@@ -274,16 +278,17 @@ void SHA1Final(unsigned char digest[20], SHA1_CTX* context)
         u_int32_t t = context->count[i];
         int j;
 
-        for (j = 0; j < 4; t >>= 8, j++)
+        for (j = 0; j < 4; t >>= 8, j++) {
             *--fcp = (unsigned char) t
-                 }
+        }
+    }
 #else
     for (i = 0; i < 8; i++) {
         finalcount[i] = (unsigned char)((context->count[(i >= 4 ? 0 : 1)]
-                                         >> ((3-(i & 3)) * 8)) & 255);   /* Endian independent */
+                                         >> ((3 - (i & 3)) * 8)) & 255); /* Endian independent */
     }
 #endif
-             c = 0200;
+    c = 0200;
     SHA1Update(context, &c, 1);
     while ((context->count[0] & 504) != 448) {
         c = 0000;
@@ -292,7 +297,7 @@ void SHA1Final(unsigned char digest[20], SHA1_CTX* context)
     SHA1Update(context, finalcount, 8);  /* Should cause a SHA1Transform() */
     for (i = 0; i < 20; i++) {
         digest[i] = (unsigned char)
-                    ((context->state[i>>2] >> ((3-(i & 3)) * 8)) & 255);
+                    ((context->state[i>>2] >> ((3 - (i & 3)) * 8)) & 255);
     }
     /* Wipe variables */
     memset(context, '\0', sizeof(*context));
@@ -371,7 +376,7 @@ static int Auth_browserid_check_cookie(request_rec *r);
 static int Auth_browserid_fixups(request_rec *r);
 static void createSessionCookie(request_rec *r, BrowserIDConfigRec *conf, char *identity);
 static char * extract_cookie(request_rec *r, const char *szCookie_name);
-static void fix_headers_in(request_rec *r,char*szPassword);
+static void fix_headers_in(request_rec *r, char*szPassword);
 static char *generateSignature(request_rec *r, BrowserIDConfigRec *conf, char *userAddress);
 apr_table_t *parseArgs(request_rec *r, char *argStr);
 static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf);
@@ -405,7 +410,7 @@ static void *create_browserid_config(apr_pool_t *p, char *d)
 
     conf->authBasicFix           = 0;  /* do not fix header for php auth by default */
     conf->authoritative          = 0;  /* not by default */
-    conf->cookieName             = apr_pstrdup(p,"BrowserID");
+    conf->cookieName             = apr_pstrdup(p, "BrowserID");
     conf->forwardedRequestHeader = NULL; /* pass the authenticated user, signed, as an HTTP header */
     conf->logoutPath             = NULL;
     conf->serverSecret           = "BrowserIDSecret";
@@ -419,7 +424,7 @@ static void *create_browserid_config(apr_pool_t *p, char *d)
  * and URL-unescape it. Return the cookie on success, NULL on failure. */
 static char * extract_cookie(request_rec *r, const char *szCookie_name)
 {
-    char *szRaw_cookie_start=NULL, *szRaw_cookie_end;
+    char *szRaw_cookie_start = NULL, *szRaw_cookie_end;
     char *szCookie;
     /* get cookie string */
     char*szRaw_cookie = (char*)apr_table_get(r->headers_in, "Cookie");
@@ -431,11 +436,12 @@ static char * extract_cookie(request_rec *r, const char *szCookie_name)
                       "Checking cookie %s, looking for %s", szRaw_cookie, szCookie_name);
 
         /* search cookie name in cookie string */
-        UNLESS(szRaw_cookie =strstr(szRaw_cookie, szCookie_name)) return 0;
-        szRaw_cookie_start=szRaw_cookie;
+        UNLESS(szRaw_cookie = strstr(szRaw_cookie, szCookie_name)) return 0;
+        szRaw_cookie_start = szRaw_cookie;
         /* search '=' */
         UNLESS(szRaw_cookie = strchr(szRaw_cookie, '=')) return 0;
-    } while (strncmp(szCookie_name,szRaw_cookie_start,szRaw_cookie-szRaw_cookie_start)!=0);
+    }
+    while (strncmp(szCookie_name, szRaw_cookie_start, szRaw_cookie - szRaw_cookie_start) != 0);
 
     /* skip '=' */
     szRaw_cookie++;
@@ -444,7 +450,7 @@ static char * extract_cookie(request_rec *r, const char *szCookie_name)
     UNLESS((szRaw_cookie_end = strchr(szRaw_cookie, ';')) || (szRaw_cookie_end = strchr(szRaw_cookie, '\0'))) return 0;
 
     /* dup the value string found in apache pool and set the result pool ptr to szCookie ptr */
-    UNLESS(szCookie = apr_pstrndup(r->pool, szRaw_cookie, szRaw_cookie_end-szRaw_cookie)) return 0;
+    UNLESS(szCookie = apr_pstrndup(r->pool, szRaw_cookie, szRaw_cookie_end - szRaw_cookie)) return 0;
     /* unescape the value string */
     UNLESS(ap_unescape_url(szCookie) == 0) return 0;
 
@@ -499,18 +505,20 @@ static void fix_headers_in(request_rec *r, char*szPassword)
        (mainly to fix apache logging of php scripts). We only set this
        if there is no header already present. */
 
-    if (apr_table_get(r->headers_in,"Authorization") == NULL) {
+    if (apr_table_get(r->headers_in, "Authorization") == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
-                      "fixing apache Authorization header for this request using user: %s",r->user);
+                      "fixing apache Authorization header for this request using user: %s", r->user);
 
         /* concat username and ':' */
-        if (szPassword!=NULL)
-            szUser=(char*)apr_pstrcat(r->pool, r->user, ":", szPassword, NULL);
-        else
-            szUser=(char*)apr_pstrcat(r->pool, r->user, ":", NULL);
+        if (szPassword != NULL) {
+            szUser = (char*)apr_pstrcat(r->pool, r->user, ":", szPassword, NULL);
+        }
+        else {
+            szUser = (char*)apr_pstrcat(r->pool, r->user, ":", NULL);
+        }
 
         /* alloc memory for the estimated encode size of the username */
-        char *szB64_enc_user=(char*)apr_palloc(r->pool,apr_base64_encode_len(strlen(szUser))+1);
+        char *szB64_enc_user = (char*)apr_palloc(r->pool, apr_base64_encode_len(strlen(szUser)) + 1);
         UNLESS(szB64_enc_user) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                           "memory alloc failed!");
@@ -518,13 +526,13 @@ static void fix_headers_in(request_rec *r, char*szPassword)
         }
 
         /* encode username in base64 format */
-        apr_base64_encode(szB64_enc_user,szUser,strlen(szUser));
+        apr_base64_encode(szB64_enc_user, szUser, strlen(szUser));
 
         /* set authorization header */
-        apr_table_set(r->headers_in,"Authorization", (char*)apr_pstrcat(r->pool,"Basic ",szB64_enc_user,NULL));
+        apr_table_set(r->headers_in, "Authorization", (char*)apr_pstrcat(r->pool, "Basic ", szB64_enc_user, NULL));
 
         /* force auth type to basic */
-        r->ap_auth_type=apr_pstrdup(r->pool,"Basic");
+        r->ap_auth_type = apr_pstrdup(r->pool, "Basic");
     }
 
     return;
@@ -553,19 +561,19 @@ static int validateCookie(request_rec *r, BrowserIDConfigRec *conf, char *szCook
     char *sig = NULL;
     char *addr = apr_strtok(szCookieValue, "|", &sig);
     if (!addr) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                       "malformed BrowserID cookie");
         return 1;
     }
 
     char *digest64 = generateSignature(r, conf, addr);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, ERRTAG
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
                   "Got cookie: email is %s; expected digest is %s; got digest %s",
                   addr, digest64, sig);
 
     /* paranoia indicates that we should use a time-invariant compare here */
     if (strcmp(digest64, sig)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG "invalid BrowserID cookie");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG "invalid BrowserID cookie");
         free(digest64);
         return 1;
     }
@@ -592,14 +600,15 @@ static int Auth_browserid_check_cookie(request_rec *r)
     /* get apache config */
     conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
-    UNLESS(conf->authoritative)
-    return DECLINED;
+    UNLESS(conf->authoritative) {
+        return DECLINED;
+    }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,ERRTAG
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
                   "AuthType are '%s'", ap_auth_type(r));
 
-    UNLESS(strncmp("BrowserID",ap_auth_type(r),9) == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
+    UNLESS(strncmp("BrowserID", ap_auth_type(r), 9) == 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                       "Auth type must be 'BrowserID'");
         return HTTP_UNAUTHORIZED;
     }
@@ -613,7 +622,7 @@ static int Auth_browserid_check_cookie(request_rec *r)
     /* get cookie who are named cookieName */
     UNLESS(szCookieValue = extract_cookie(r, conf->cookieName)) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
-                      "BrowserID cookie not found; not authorized! RemoteIP:%s",szRemoteIP);
+                      "BrowserID cookie not found; not authorized! RemoteIP:%s", szRemoteIP);
         return HTTP_UNAUTHORIZED;
     }
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
@@ -634,8 +643,9 @@ static int Auth_browserid_check_cookie(request_rec *r)
                   "BrowserID authentication ok");
 
     /* fix http header for php */
-    if (conf->authBasicFix)
+    if (conf->authBasicFix) {
         fix_headers_in(r, "browserid");
+    }
 
     /* if all is ok return auth ok */
     return OK;
@@ -672,14 +682,16 @@ static int Auth_browserid_check_auth(request_rec *r)
     reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
 
     /* decline if no require line found */
-    if (!reqs_arr)
+    if (!reqs_arr) {
         return DECLINED;
+    }
 
     /* walk through the array to check each require command */
     for (x = 0; x < reqs_arr->nelts; x++) {
 
-        if (!(reqs[x].method_mask & (AP_METHOD_BIT << r->method_number)))
+        if (!(reqs[x].method_mask & (AP_METHOD_BIT << r->method_number))) {
             continue;
+        }
 
         /* get require line */
         szRequireLine = reqs[x].requirement;
@@ -692,31 +704,32 @@ static int Auth_browserid_check_auth(request_rec *r)
                       "Require Cmd is '%s'", szRequire_cmd);
 
         /* if require cmd are valid-user, they are already authenticated than allow and return OK */
-        if (!strcmp("valid-user",szRequire_cmd)) {
-            ap_log_rerror(APLOG_MARK,APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
+        if (!strcmp("valid-user", szRequire_cmd)) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
                           "Require Cmd valid-user");
             return OK;
         }
         /* check the required user */
-        else if (!strcmp("user",szRequire_cmd)) {
+        else if (!strcmp("user", szRequire_cmd)) {
             szUser = ap_getword_conf(r->pool, &szRequireLine);
             if (strcmp(r->user, szUser)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, ERRTAG
-                              "user '%s' is not the required user '%s'",r->user, szUser);
+                              "user '%s' is not the required user '%s'", r->user, szUser);
                 return HTTP_FORBIDDEN;
             }
             ap_log_rerror(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r, ERRTAG
-                          "user '%s' is authorized",r->user);
+                          "user '%s' is authorized", r->user);
             return OK;
         }
         /* check for users in a file */
-        else if (!strcmp("userfile",szRequire_cmd)) {
+        else if (!strcmp("userfile", szRequire_cmd)) {
             szFileName = ap_getword_conf(r->pool, &szRequireLine);
             if (!user_in_file(r, r->user, szFileName)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, ERRTAG
-                              "user '%s' is not in username list at '%s'", r->user,szFileName);
+                              "user '%s' is not in username list at '%s'", r->user, szFileName);
                 return HTTP_FORBIDDEN;
-            } else {
+            }
+            else {
                 return OK;
             }
         }
@@ -814,8 +827,9 @@ apr_table_t *parseArgs(request_rec *r, char *argStr)
          pair ;
          pair = apr_strtok(NULL, delim, &last)) {
         for (eq = pair ; *eq ; ++eq)
-            if (*eq == '+')
+            if (*eq == '+') {
                 *eq = ' ' ;
+            }
 
         ap_unescape_url(pair) ;
         eq = strchr(pair, '=') ;
@@ -823,7 +837,8 @@ apr_table_t *parseArgs(request_rec *r, char *argStr)
         if (eq) {
             *eq++ = 0 ;
             apr_table_merge(vars, pair, eq) ;
-        } else {
+        }
+        else {
             apr_table_merge(vars, pair, "") ;
         }
     }
@@ -880,21 +895,23 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
                     }
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
                                   "In post_read_request; parsed JSON from verification server: %s", assertionResult);
-                } else {
+                }
+                else {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                                   "Unable to verify assertion; communication error with verification server");
                     return DECLINED;
                 }
-            } else {
+            }
+            else {
                 if (conf->verifyLocally) {
-                    char *hdr=NULL, *payload=NULL, *sig=NULL;
+                    char *hdr = NULL, *payload = NULL, *sig = NULL;
                     char *assertion = apr_pstrdup(r->pool, assertionParsed);
-                    hdr= apr_strtok(assertion, ".", &payload);
+                    hdr = apr_strtok(assertion, ".", &payload);
                     if (hdr) {
-                        payload= apr_strtok(payload, ".", &sig);
+                        payload = apr_strtok(payload, ".", &sig);
                         if (sig) {
                             int len = apr_base64_decode_len(payload);
-                            char *payloadDecode = apr_pcalloc(r->pool, len+1);
+                            char *payloadDecode = apr_pcalloc(r->pool, len + 1);
                             apr_base64_decode(payloadDecode, payload);
 
                             char errorBuffer[256];
@@ -907,7 +924,8 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
                             /** XXX more local validation required!!! Check timestamp, audience **/
                         }
                     }
-                } else {
+                }
+                else {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                                   "Cannot verify BrowserID login: no verification server configured!");
                     return DECLINED;
@@ -931,13 +949,14 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
                 createSessionCookie(r, conf, foundEmail->u.string);
 
                 /* redirect to the requested resource */
-                apr_table_set(r->headers_out,"Location", returnto);
+                apr_table_set(r->headers_out, "Location", returnto);
 
                 return HTTP_TEMPORARY_REDIRECT;
             }
         }
-    } else {
-        ap_log_rerror(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, 0, r, ERRTAG
+    }
+    else {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, ERRTAG
                       "In post_read_request; this is a POST - skipping it for now");
     }
     return DECLINED;
@@ -957,11 +976,11 @@ static int processLogout(request_rec *r, BrowserIDConfigRec *conf)
         apr_table_t *vars = parseArgs(r, r->args);
         const char *returnto = apr_table_get(vars, "returnto") ;
         if (returnto) {
-            apr_table_set(r->headers_out,"Location", returnto);
+            apr_table_set(r->headers_out, "Location", returnto);
             return HTTP_TEMPORARY_REDIRECT;
         }
     }
-    apr_table_set(r->headers_out,"Location", "/");
+    apr_table_set(r->headers_out, "Location", "/");
     return HTTP_TEMPORARY_REDIRECT;
 }
 
@@ -975,14 +994,15 @@ static int processLogout(request_rec *r, BrowserIDConfigRec *conf)
  */
 static int Auth_browserid_fixups(request_rec *r)
 {
-    BrowserIDConfigRec *conf=NULL;
+    BrowserIDConfigRec *conf = NULL;
 
     /* get apache config */
     conf = ap_get_module_config(r->per_dir_config, &auth_browserid_module);
 
     if (conf->submitPath && !strcmp(r->uri, conf->submitPath)) {
         return processAssertionFormSubmit(r, conf);
-    } else if (conf->logoutPath && !strcmp(r->uri, conf->logoutPath)) {
+    }
+    else if (conf->logoutPath && !strcmp(r->uri, conf->logoutPath)) {
         return processLogout(r, conf);
     }
 
