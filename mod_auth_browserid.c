@@ -816,30 +816,32 @@ static char *verifyAssertionRemote(request_rec *r, BrowserIDConfigRec *conf, cha
 /* Parse x-www-url-formencoded args */
 apr_table_t *parseArgs(request_rec *r, char *argStr)
 {
-    char *pair ;
-    char *last = NULL ;
-    char *eq ;
+    char *pair;
+    char *last = NULL;
+    char *eq;
 
-    apr_table_t *vars = apr_table_make(r->pool, 10) ;
+    apr_table_t *vars = apr_table_make(r->pool, 10);
     char *delim = "&";
 
-    for (pair = apr_strtok(r->args, delim, &last) ;
-         pair ;
+    for (pair = apr_strtok(r->args, delim, &last);
+         pair;
          pair = apr_strtok(NULL, delim, &last)) {
-        for (eq = pair ; *eq ; ++eq)
-            if (*eq == '+') {
-                *eq = ' ' ;
-            }
 
-        ap_unescape_url(pair) ;
-        eq = strchr(pair, '=') ;
+        for (eq = pair; *eq; ++eq) {
+            if (*eq == '+') {
+                *eq = ' ';
+            }
+        }
+
+        ap_unescape_url(pair);
+        eq = strchr(pair, '=');
 
         if (eq) {
-            *eq++ = 0 ;
-            apr_table_merge(vars, pair, eq) ;
+            *eq++ = 0;
+            apr_table_merge(vars, pair, eq);
         }
         else {
-            apr_table_merge(vars, pair, "") ;
+            apr_table_merge(vars, pair, "");
         }
     }
     return vars;
@@ -870,12 +872,12 @@ static int processAssertionFormSubmit(request_rec *r, BrowserIDConfigRec *conf)
     if (r->method_number == M_GET) {
         if (r->args) {
             if (strlen(r->args) > 16384) {
-                return HTTP_REQUEST_URI_TOO_LARGE ;
+                return HTTP_REQUEST_URI_TOO_LARGE;
             }
 
             apr_table_t *vars = parseArgs(r, r->args);
-            const char *assertionParsed = apr_table_get(vars, "assertion") ;
-            const char *returnto = apr_table_get(vars, "returnto") ;
+            const char *assertionParsed = apr_table_get(vars, "assertion");
+            const char *returnto = apr_table_get(vars, "returnto");
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
                           "In post_read_request; parsed assertion as %s", assertionParsed);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r, ERRTAG
@@ -970,11 +972,11 @@ static int processLogout(request_rec *r, BrowserIDConfigRec *conf)
 
     if (r->args) {
         if (strlen(r->args) > 16384) {
-            return HTTP_REQUEST_URI_TOO_LARGE ;
+            return HTTP_REQUEST_URI_TOO_LARGE;
         }
 
         apr_table_t *vars = parseArgs(r, r->args);
-        const char *returnto = apr_table_get(vars, "returnto") ;
+        const char *returnto = apr_table_get(vars, "returnto");
         if (returnto) {
             apr_table_set(r->headers_out, "Location", returnto);
             return HTTP_TEMPORARY_REDIRECT;
