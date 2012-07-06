@@ -21,6 +21,10 @@
  *
  * SHA-1 implementation by Steve Reid, steve@edmweb.com, in
  * public domain.
+ *
+ * Database usage is based on the Apache2 standard module
+ * "mod_authn_dbd" with directives renamed for this module.
+ *
  */
 
 #include <stdio.h>
@@ -30,6 +34,7 @@
 #include "apr_strings.h"
 #include "apr_uuid.h"
 #include "apr_tables.h"
+#include "apr_dbd.h" /* for SQL DB use */
 
 #include "httpd.h"
 #include "http_config.h"
@@ -477,6 +482,37 @@ static char *extract_cookie(request_rec *r, const char *szCookie_name)
  * configuration directory search rules) and search for the given username
  * in it (as a newline-seaparated list) */
 static int user_in_file(request_rec *r, char *username, char *filename)
+{
+    apr_status_t status;
+    char l[MAX_STRING_LEN];
+    ap_configfile_t *f;
+    status = ap_pcfg_openfile(&f, r->pool, filename);
+    if (status != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Could not open user file: %s", filename);
+        return 0;
+    }
+
+    int found = 0;
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
+
+        /* Skip # or blank lines. */
+        if ((l[0] == '#') || (!l[0])) {
+            continue;
+        }
+
+        if (!strcmp(username, l)) {
+            found = 1;
+            break;
+        }
+    }
+    ap_cfg_closefile(f);
+    return found;
+}
+
+/** Given a database name and table of usernames, query the
+ *  presence of the username (see mod_dbd) */
+static int user_in_db(request_rec *r, char *username, char *filename)
 {
     apr_status_t status;
     char l[MAX_STRING_LEN];
