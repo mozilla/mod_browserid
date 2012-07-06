@@ -1,4 +1,4 @@
-mod_browserid is a module for Apache 2.0 or later that implements Apache authentication for the BrowserID protocol.
+mod_browserid is a module for Apache 2.0 or later that implements Apache authentication for the BrowserID protocol.  
 
 Building and Installing
 =======================
@@ -58,6 +58,9 @@ Once authentication is set up, the "require" directive can be used with one of t
 * `require user <someID>`: a specific identity must be presented
 * `require userfile <path-to-file>`: the BrowserID presented by the user must be the newline-separated list of identities found in this file
 
+Instead of a file of authorized identities a database may be used.  In that case several other directives must be used along with the `require valid-user` directive:
+
+ 
 NOT YET IMPLEMENTED
 -------------------
 
@@ -100,6 +103,7 @@ httpd.conf:
 
     # file with authorized user names (e-mail addresses)
     Require userfile /usr/local/apache2/htdocs/id_demo_users
+    
   </Directory>
 ```
 
