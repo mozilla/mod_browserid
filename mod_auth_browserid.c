@@ -510,38 +510,6 @@ static int user_in_file(request_rec *r, char *username, char *filename)
     return found;
 }
 
-/** Given a database name and table of usernames, query the
- *  presence of the username (see mod_dbd) */
-static int user_in_db(request_rec *r, char *username, char *filename)
-{
-    apr_status_t status;
-    char l[MAX_STRING_LEN];
-    ap_configfile_t *f;
-    status = ap_pcfg_openfile(&f, r->pool, filename);
-    if (status != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                      "Could not open user file: %s", filename);
-        return 0;
-    }
-
-    int found = 0;
-    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
-
-        /* Skip # or blank lines. */
-        if ((l[0] == '#') || (!l[0])) {
-            continue;
-        }
-
-        if (!strcmp(username, l)) {
-            found = 1;
-            break;
-        }
-    }
-    ap_cfg_closefile(f);
-    return found;
-}
-
-
 /* function to fix any headers in the input request that may be relied on by an
    application. e.g. php uses the Authorization header when logging the request
    in apache and not r->user (like it ought to). It is applied after the request
