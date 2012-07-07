@@ -57,9 +57,6 @@ Once authentication is set up, the "require" directive can be used with one of t
 * `require valid-user`: a valid BrowserID identity must have been presented
 * `require user <someID>`: a specific identity must be presented
 * `require userfile <path-to-file>`: the BrowserID presented by the user must be the newline-separated list of identities found in this file
-
-Instead of a file of authorized identities a database may be used.  In that case several other directives must be used along with the `require valid-user` directive:
-
  
 NOT YET IMPLEMENTED
 -------------------
