@@ -1,0 +1,31 @@
+Base dbd use on standard module mod_authn_dbd.
+
+git hints for local repo clone:
+
+$ git remote -v
+origin	ssh://git@github.com/tbrowder/mod_browserid.git (fetch)
+origin	ssh://git@github.com/tbrowder/mod_browserid.git (push)
+upstream	git@github.com:mozilla/mod_browserid.git (fetch)
+upstream	git@github.com:mozilla/mod_browserid.git (push)
+
+
+# update my repo on git hub from the local repo:
+$ git push origin master # alias: gip
+
+# update my local repo from mozilla repo
+$ git fetch upstream # alias giu or gif
+
+From Mozilla's Mike Hanson:
+==========================
+
+If this is new territory for you, check out
+https://help.github.com/articles/using-pull-requests - it's a good
+explanation of how these things work.
+
+If you're working on an actual clone of mozilla/modbrowserid, you may
+want to back up a step, fork to your own account, and commit your
+changes on that repo.  Then the github.com "pull request" button does
+everything you want, including a nice diff view, comment system, etc.
+
+[cool--it works]
+
