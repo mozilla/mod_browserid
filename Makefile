@@ -1,6 +1,14 @@
 CC=gcc
+
+# if user has not defined the apxs path, try to set
+# it here
 ifeq ($(APXS_PATH),)
-APXS_PATH=/usr/sbin/apxs
+  APXS_PATH := $(shell which apxs)
+endif
+
+# check again, abort on error
+ifeq ($(APXS_PATH),)
+  $(error Cannot find Apache utility program 'apxs')
 endif
 
 MY_LDFLAGS=-lcurl -lyajl
