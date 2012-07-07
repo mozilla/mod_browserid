@@ -18,7 +18,7 @@ all:  mod_auth_browserid.la
 
 install: mod_auth_browserid.la 
 	@echo "-"$*"-" "-"$?"-" "-"$%"-" "-"$@"-" "-"$<"-"
-	$(MY_APXS) -i $?
+	$(APXS_PATH) -i $?
 
 clean:
 	-rm -f *.o *.lo *.la *.slo 
