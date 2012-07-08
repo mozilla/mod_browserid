@@ -391,7 +391,7 @@ static int   user_in_file(request_rec *r, char *username, char *filename);
 static int   validateCookie(request_rec *r, BrowserIDConfigRec *conf, char *szCookieValue);
 static char *verifyAssertionRemote(request_rec *r, BrowserIDConfigRec *conf, char *assertionText);
 
-/* apache module name */
+/* apache module name (used in LoadModule) */
 module AP_MODULE_DECLARE_DATA auth_browserid_module;
 
 /* apache module structure */
