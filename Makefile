@@ -16,9 +16,12 @@ MY_LDFLAGS=-lcurl -lyajl
 # Note that gcc flags are passed through apxs, so preface with -Wc
 MY_CFLAGS=-Wc,-I. -Wc,-Wall
 
+# note apsx adds "_module" to the name
+MODULE_NAME := auth_browserid
+
 .SUFFIXES: .c .o .la
 .c.la:
-	$(APXS_PATH) $(MY_LDFLAGS) $(MY_CFLAGS) -c $< 
+	$(APXS_PATH) $(MY_LDFLAGS) $(MY_CFLAGS) -c $< -n $(MODULE_NAME)
 .c.o:
 	$(CC) -c $<
 
@@ -26,7 +29,7 @@ all:  mod_auth_browserid.la
 
 install: mod_auth_browserid.la 
 	@echo "-"$*"-" "-"$?"-" "-"$%"-" "-"$@"-" "-"$<"-"
-	$(APXS_PATH) -i $?
+	$(APXS_PATH) -i -n $(MODULE_NAME) -a $?
 
 clean:
 	-rm -f *.o *.lo *.la *.slo 
