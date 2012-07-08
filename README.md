@@ -1,4 +1,4 @@
-mod_browserid is a module for Apache 2.0 or later that implements Apache authentication for the BrowserID protocol.
+mod_browserid is a module for Apache 2.0 or later that implements Apache authentication for the BrowserID protocol.  
 
 Building and Installing
 =======================
@@ -57,7 +57,7 @@ Once authentication is set up, the "require" directive can be used with one of t
 * `require valid-user`: a valid BrowserID identity must have been presented
 * `require user <someID>`: a specific identity must be presented
 * `require userfile <path-to-file>`: the BrowserID presented by the user must be the newline-separated list of identities found in this file
-
+ 
 NOT YET IMPLEMENTED
 -------------------
 
@@ -80,31 +80,35 @@ httpd.conf:
   LoadModule mod_auth_browserid_module modules/mod_auth_browserid.so
 
   <Directory /usr/local/apache2/htdocs/id_login >
-  AuthBrowserIDCookieName myauthcookie
-  AuthBrowserIDSubmitPath "/id_login/submit"
-  AuthBrowserIDVerificationServerURL "https://browserid.org/verify"
+    AuthBrowserIDCookieName myauthcookie
+    AuthBrowserIDSubmitPath "/id_login/submit"
+    AuthBrowserIDVerificationServerURL "https://browserid.org/verify"
   </Directory>
   
   <Directory /usr/local/apache2/htdocs/id_demo/ >
-   AuthType BrowserID
-   AuthBrowserIDAuthoritative on
-   AuthBrowserIDCookieName myauthcookie
-   AuthBrowserIDVerificationServerURL "https://browserid.org/verify"
-  
-   # must be set (apache mandatory) but not used by the module
-   AuthName "My Login"
-  
-   # to redirect unauthorized users to the login page
-   ErrorDocument 401 "/id_login/browserid_login.php"
+    AuthType BrowserID
+    AuthBrowserIDAuthoritative on
+    AuthBrowserIDCookieName myauthcookie
+    AuthBrowserIDSecret aaz5R2w42^24A3uM&75Z822M79xQ82
+    AuthBrowserIDVerificationServerURL "https://browserid.org/verify"
+    
+    # must be set (apache mandatory) but not used by the module
+    AuthName "My Login"
 
-   require userfile /usr/local/apache2/htdocs/id_demo_users
+    # to redirect unauthorized users to the login page
+    ErrorDocument 401 "/id_login/browserid_login.php"
+
+    # file with authorized user names (e-mail addresses)
+    Require userfile /usr/local/apache2/htdocs/id_demo_users
+    
   </Directory>
 ```
 
 /id_login/browserid_login.php:
 
 ```
-  <?php?><html>
+  <?php
+  <html>
   <head>
   <script src="https://browserid.org/include.js" type="text/javascript"></script>
   <title>Authentication</title>
@@ -126,6 +130,7 @@ httpd.conf:
         });
   }
   </script></body></html>
+  ?>
 ```
 /usr/local/apache2/htdocs/id_demo_users:
 

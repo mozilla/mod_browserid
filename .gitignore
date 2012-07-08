@@ -1,0 +1,13 @@
+.libs
+*.new
+*.orig
+my-pull.log
+update-vh1.sh
+*~
+*.lo
+*.slo
+*.la
+t
+tt
+ttt
+tttt

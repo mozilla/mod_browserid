@@ -1,0 +1,35 @@
+# Use k&r styling
+style=k&r
+
+# set standard spacing
+indent=spaces=4
+
+# set pointer format to existing predominat style
+align-pointer=name
+
+# Indent goto labels rather than making them flush on the left
+indent-labels
+
+# no cuddled else's!
+break-closing-brackets
+
+# use brackets for one-line conditionals
+add-brackets
+
+# Indent switch cases
+indent-switches
+
+# We don't want to add additional indentation to conditionals 
+min-conditional-indent=0
+
+# Allow deeper indenting of statements
+max-instatement-indent=79
+
+# Pad operators
+pad-oper
+
+# Tighten parenthesis (unless overridden by other options such as pad-header)
+unpad-paren
+
+# Keep the space between if, while, etc. and the first paren
+pad-header
