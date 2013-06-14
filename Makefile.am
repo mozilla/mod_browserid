@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS = -I build
 module_LTLIBRARIES = mod_auth_browserid.la
 moduledir = $(shell $(APXS) -q LIBEXECDIR)
 
-EXTRA_DIST=t README TODO LICENSE build/mod_auth_browserid.spec build/test.pl .indent.pro
+EXTRA_DIST=t README.md build/mod_auth_browserid.spec build/test.pl .indent.pro
 
 APR_CONFIG = $(shell $(APXS) -q APR_CONFIG)
 APU_CONFIG = $(shell $(APXS) -q APU_CONFIG)

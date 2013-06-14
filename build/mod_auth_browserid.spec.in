@@ -42,7 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc README* LICENSE TODO
+%doc README*
 %{_libdir}/httpd/modules/*.so
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/%{name}.conf
 
