@@ -3,6 +3,7 @@
 Makefile.in
 aclocal.m4
 autom4te.cache/
+build/
 config.h
 config.h.in
 config.h.in~
@@ -15,3 +16,4 @@ mod_auth_browserid.la
 mod_auth_browserid.lo
 mod_auth_browserid.slo
 stamp-h1
+*~
