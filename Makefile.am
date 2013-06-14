@@ -17,7 +17,7 @@ HTTPD_CFLAGS = $(shell $(APXS) -q CFLAGS) -I $(shell $(APXS) -q INCLUDEDIR)
 AM_CFLAGS = $(HTTPD_CFLAGS) $(APR_CFLAGS) $(APU_CFLAGS) $(LIBCURL) -L/usr/local/lib -lyajl  -Wl,-rpath=/usr/local/lib
 
 mod_auth_browserid_la_SOURCES = mod_auth_browserid.c 
-mod_auth_browserid_la_LDFLAGS = -module -avoid-version -Wl,-rpath=/usr/local/lib
+mod_auth_browserid_la_LDFLAGS = -module -avoid-version
 
 check: test
 
