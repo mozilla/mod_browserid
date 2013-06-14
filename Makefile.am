@@ -14,10 +14,10 @@ HTTPD_CFLAGS = $(shell $(APXS) -q CFLAGS) -I $(shell $(APXS) -q INCLUDEDIR)
 
 #LIBTOOL = $(shell $(APR_CONFIG) --apr-libtool)
 
-AM_CFLAGS = $(HTTPD_CFLAGS) $(APR_CFLAGS) $(APU_CFLAGS) $(LIBCURL) -L/usr/local/lib -lyajl  -Wl,-rpath=/usr/local/lib
+AM_CFLAGS = $(HTTPD_CFLAGS) $(APR_CFLAGS) $(APU_CFLAGS) $(YAJL_CFLAGS) $(LIBCURL_CPPFLAGS)
 
 mod_auth_browserid_la_SOURCES = mod_auth_browserid.c 
-mod_auth_browserid_la_LDFLAGS = -module -avoid-version
+mod_auth_browserid_la_LDFLAGS = -module -avoid-version $(YAJL_LIBS) $(LIBCURL)
 
 check: test
 

@@ -1,7 +1,5 @@
-dnl $Id: configure.in,v 1.3 2003/03/11 18:31:19 gozer Exp $
-
 AC_PREREQ(2.60)
-AC_INIT(mod_browserid, 0.1, gozer@apache.org)
+AC_INIT(mod_auth_browserid, 0.1, llyod@mozilla.com)
 AC_CONFIG_AUX_DIR(build)
 AC_CONFIG_MACRO_DIR([build])
 
@@ -24,7 +22,7 @@ LIBCURL_CHECK_CONFIG([],[],[],[
     AC_MSG_ERROR([libcurl is required])
 ])
 
-AC_CHECK_LIB([yajl],[yajl_tree_parse])
+PKG_CHECK_MODULES([YAJL], [yajl])
 
 AC_PROG_PERL_VERSION(5.8.0)
 AC_PERL_MODULE_VERSION(Apache::Test 0, , AC_MSG_ERROR(Need some Perl modules))
