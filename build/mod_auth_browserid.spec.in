@@ -32,7 +32,7 @@ rm %{buildroot}/%{_libdir}/httpd/modules/*.la
 
 %{__mkdir_p} %{buildroot}%{_sysconfdir}/httpd/conf.d
 %{__cat} << EOF > %{buildroot}%{_sysconfdir}/httpd/conf.d/%{name}.conf
-LoadModule concat_module modules/%{name}.so
+LoadModule mod_auth_browserid_module modules/%{name}.so
 
 EOF
 
