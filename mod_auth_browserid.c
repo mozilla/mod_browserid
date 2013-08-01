@@ -610,12 +610,17 @@ static int Auth_browserid_fixups(request_rec *r)
   return DECLINED;
 }
 
+static int Auth_browserid_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s) {
+  ap_add_version_component(pconf, "mod_browserid/" VERSION);
+  return OK;
+}
 
 /**************************************************
  * register module hooks
  **************************************************/
 static void register_hooks(apr_pool_t *p)
 {
+  ap_hook_post_config(Auth_browserid_post_config, NULL, NULL, APR_HOOK_FIRST);
   ap_hook_check_user_id(Auth_browserid_check_cookie, NULL, NULL, APR_HOOK_FIRST);
   ap_hook_auth_checker(Auth_browserid_check_auth, NULL, NULL, APR_HOOK_FIRST);
   ap_hook_fixups(Auth_browserid_fixups, NULL, NULL, APR_HOOK_FIRST);
