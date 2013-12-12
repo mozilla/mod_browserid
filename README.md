@@ -1,3 +1,6 @@
+**`mod_browserid` has been replaced with [`mod_authnz_persona`](https://github.com/mozilla/mod_authnz_persona)**
+
+
 mod_browserid is a module for Apache 2.0 or later that implements Apache authentication for the BrowserID protocol.
 
 Building and Installing
